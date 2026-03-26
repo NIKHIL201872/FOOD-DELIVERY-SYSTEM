@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "restaurants")
 @Data
@@ -23,5 +25,6 @@ public class RestaurantsEntity {
     private List<MenuItemsEntity> menuItems;
 
     @OneToMany(mappedBy = "restaurant")
+    @JsonBackReference
     private List<OrdersEntity> orders;
 }
