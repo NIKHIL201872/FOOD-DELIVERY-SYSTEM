@@ -12,7 +12,7 @@ import java.util.List;
 public class CustomersEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer customerId;
 
     private String customerName;
@@ -22,7 +22,7 @@ public class CustomersEntity {
 
     private String customerPhone;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private List<DeliveryAddressesEntity> addresses;
 
     @OneToMany(mappedBy = "customer")
