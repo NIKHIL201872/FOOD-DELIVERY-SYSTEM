@@ -6,7 +6,9 @@ import java.math.BigDecimal;
 
 @Entity
 @Table(name = "menuitems")
-@Data
+@Setter
+@Getter
+
 @NoArgsConstructor
 @AllArgsConstructor
 public class MenuItemsEntity {
@@ -20,7 +22,7 @@ public class MenuItemsEntity {
     @Column(columnDefinition = "TEXT")
     private String itemDescription;
 
-    private BigDecimal itemPrice;
+    private double itemPrice;
 
     @ManyToOne
     @JoinColumn(name = "restaurant_id")
