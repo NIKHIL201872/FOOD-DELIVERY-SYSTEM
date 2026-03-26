@@ -47,7 +47,7 @@ public class RatingController {
     }
 
     // ✅ UPDATE
-    @PutMapping("/{id}")
+//    @PutMapping("/{id}")
 //    public RatingEntity update(@PathVariable Integer id, @RequestBody Rating dto) {
 //        return ratingService.update(id, dto);
 //    }
