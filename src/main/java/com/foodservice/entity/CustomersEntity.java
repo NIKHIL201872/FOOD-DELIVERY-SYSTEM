@@ -17,7 +17,7 @@ public class CustomersEntity {
 
     private String customerName;
 
-    @Column(unique = true)
+    //@Column(unique = true)
     private String customerEmail;
 
     private String customerPhone;

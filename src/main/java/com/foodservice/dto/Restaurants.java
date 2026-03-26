@@ -1,5 +1,13 @@
 package com.foodservice.dto;
 
-public class Restaurants {
+import lombok.*;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Restaurants {
+    private Integer restaurantId;
+    private String restaurantName;
+    private String restaurantAddress;
+    private String restaurantPhone;
 }
