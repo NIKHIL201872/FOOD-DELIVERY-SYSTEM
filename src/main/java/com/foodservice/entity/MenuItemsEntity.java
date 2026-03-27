@@ -4,9 +4,13 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "menuitems")
-@Data
+@Setter
+@Getter
+
 @NoArgsConstructor
 @AllArgsConstructor
 public class MenuItemsEntity {
@@ -20,9 +24,10 @@ public class MenuItemsEntity {
     @Column(columnDefinition = "TEXT")
     private String itemDescription;
 
-    private BigDecimal itemPrice;
+    private double itemPrice;
 
     @ManyToOne
     @JoinColumn(name = "restaurant_id")
+    @JsonBackReference
     private RestaurantsEntity restaurant;
 }

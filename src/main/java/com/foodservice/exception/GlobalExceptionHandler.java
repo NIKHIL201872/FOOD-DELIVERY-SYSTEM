@@ -35,4 +35,16 @@ public class GlobalExceptionHandler {
     public String generalHandler(Exception ex) {
         return "Something went wrong: " + ex.getMessage();
     }
+  
+    @ExceptionHandler(NoCustomerException.class)
+	public void NoCustomerExceptionHandler(NoCustomerException ex) {
+		String msg = ex.getExceptionMsg();
+		System.out.println(msg);
+	}
+	
+	@ExceptionHandler(NoAddressException.class)
+	public void NoAddressExceptionHandler(NoAddressException ex) {
+		String msg = ex.getExceptionMsg();
+		System.out.println(msg);
+	}
 }
