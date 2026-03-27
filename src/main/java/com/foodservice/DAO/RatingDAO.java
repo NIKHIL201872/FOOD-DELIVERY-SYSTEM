@@ -2,7 +2,6 @@ package com.foodservice.DAO;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.foodservice.entity.RatingEntity;
@@ -32,21 +31,15 @@ public class RatingDAO {
         repo.delete(rating);
     }
 
-    // 🔥 Dynamic Filter
-    public List<RatingEntity> findDynamic(Integer restaurantId, Integer orderId, Integer rating) {
+    public List<RatingEntity> findByRestaurantId(Integer restaurantId) {
+        return repo.findByRestaurant_RestaurantId(restaurantId);
+    }
 
-        if (restaurantId != null) {
-            return repo.findByRestaurant_RestaurantId(restaurantId);
-        }
+    public List<RatingEntity> findByOrderId(Integer orderId) {
+        return repo.findByOrder_OrderId(orderId);
+    }
 
-        if (orderId != null) {
-            return repo.findByOrder_OrderId(orderId);
-        }
-
-        if (rating != null) {
-            return repo.findByRating(rating);
-        }
-
-        return repo.findAll();
+    public List<RatingEntity> findByRating(Integer rating) {
+        return repo.findByRating(rating);
     }
 }

@@ -1,5 +1,7 @@
 package com.foodservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,9 +20,11 @@ public class OrderItemsEntity {
 
     @ManyToOne
     @JoinColumn(name = "order_id")
+    @JsonIgnore
     private OrdersEntity order;
 
     @ManyToOne
     @JoinColumn(name = "item_id")
+    @JsonIgnore
     private MenuItemsEntity item;
 }

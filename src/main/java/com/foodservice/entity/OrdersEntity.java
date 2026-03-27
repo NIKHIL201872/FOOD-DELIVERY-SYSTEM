@@ -5,6 +5,8 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "orders")
 @Data
@@ -22,14 +24,17 @@ public class OrdersEntity {
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
+    @JsonBackReference
     private CustomersEntity customer;
 
     @ManyToOne
     @JoinColumn(name = "restaurant_id")
+    @JsonBackReference
     private RestaurantsEntity restaurant;
 
     @ManyToOne
     @JoinColumn(name = "delivery_driver_id")
+    @JsonBackReference
     private DeliveryDriversEntity deliveryDriver;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
