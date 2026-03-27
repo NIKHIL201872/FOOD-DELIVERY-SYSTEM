@@ -20,10 +20,10 @@ public class RatingEntity {
     private String review;
 
     @ManyToOne
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "order_id", nullable = false)
     private OrdersEntity order;
 
     @ManyToOne
-    @JoinColumn(name = "restaurant_id")
+    @JoinColumn(name = "restaurant_id", nullable = false)
     private RestaurantsEntity restaurant;
 }

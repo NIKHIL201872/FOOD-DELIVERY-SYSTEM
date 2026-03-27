@@ -1,27 +1,14 @@
 package com.foodservice.DAO;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Repository;
 
 import com.foodservice.entity.MenuItemsEntity;
+import com.foodservice.exception.ResourceNotFoundException;
 import com.foodservice.repository.MenuItemsRepository;
-
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
 
 @Repository
 public class MenuItemsDAO {
@@ -29,13 +16,10 @@ public class MenuItemsDAO {
     @Autowired
     private MenuItemsRepository menuItemsRepository;
 
-    @PersistenceContext
-    private EntityManager entityManager;
-
     // ---------------- BASIC ----------------
 
     public MenuItemsEntity save(MenuItemsEntity item) {
-        return menuItemsRepository.save(item);
+        return menuItemsRepository.saveAndFlush(item);
     }
 
     public List<MenuItemsEntity> findAll() {
@@ -44,58 +28,86 @@ public class MenuItemsDAO {
 
     public MenuItemsEntity findById(Integer id) {
         return menuItemsRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Item not found"));
+                .orElseThrow(() -> 
+                        new ResourceNotFoundException("Item not found with id: " + id));
+    }
+    public boolean existsById(Integer id) {
+        return menuItemsRepository.existsById(id);
     }
 
     public void deleteById(Integer id) {
+        if (!menuItemsRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Item not found with id: " + id);
+        }
         menuItemsRepository.deleteById(id);
     }
 
     // ---------------- RELATION ----------------
 
     public List<MenuItemsEntity> findByRestaurantId(Integer restaurantId) {
-        return menuItemsRepository.findByRestaurantRestaurantId(restaurantId);
+        List<MenuItemsEntity> list =
+                menuItemsRepository.findByRestaurantRestaurantId(restaurantId);
+
+        if (list == null || list.isEmpty()) {
+            throw new ResourceNotFoundException(
+                    "No items found for restaurant id: " + restaurantId);
+        }
+
+        return list;
     }
 
     public List<MenuItemsEntity> findItemsByOrderId(Integer orderId) {
-        return menuItemsRepository.findItemsByOrderId(orderId);
+        List<MenuItemsEntity> list =
+                menuItemsRepository.findItemsByOrderId(orderId);
+
+        if (list == null || list.isEmpty()) {
+            throw new ResourceNotFoundException(
+                    "No items found for order id: " + orderId);
+        }
+
+        return list;
     }
 
-    // ---------------- SEARCH (DYNAMIC JPQL) ----------------
+    // ---------------- SEARCH ----------------
 
-    public List<MenuItemsEntity> searchItems(String name, Double minPrice,
-                                             Double maxPrice, Integer restaurantId) {
+    public List<MenuItemsEntity> findByName(String name) {
+        List<MenuItemsEntity> list =
+                menuItemsRepository.findByItemNameContainingIgnoreCase(name);
 
-        StringBuilder jpql = new StringBuilder("SELECT m FROM MenuItemsEntity m WHERE 1=1");
+        if (list == null || list.isEmpty()) {
+            throw new ResourceNotFoundException(
+                    "No items found with name: " + name);
+        }
 
-        if (name != null)
-            jpql.append(" AND LOWER(m.itemName) LIKE LOWER(CONCAT('%', :name, '%'))");
+        return list;
+    }
 
-        if (minPrice != null)
-            jpql.append(" AND m.itemPrice >= :minPrice");
+    public List<MenuItemsEntity> findByPriceRange(Double min, Double max) {
+        List<MenuItemsEntity> list =
+                menuItemsRepository.findByItemPriceBetween(min, max);
 
-        if (maxPrice != null)
-            jpql.append(" AND m.itemPrice <= :maxPrice");
+        if (list == null || list.isEmpty()) {
+            throw new ResourceNotFoundException(
+                    "No items found in price range");
+        }
 
-        if (restaurantId != null)
-            jpql.append(" AND m.restaurant.restaurantId = :restaurantId");
+        return list;
+    }
 
-        TypedQuery<MenuItemsEntity> query =
-                entityManager.createQuery(jpql.toString(), MenuItemsEntity.class);
+    public List<MenuItemsEntity> findByRestaurantAndPrice(
+            Integer restaurantId, Double min, Double max) {
 
-        if (name != null)
-            query.setParameter("name", name);
+        List<MenuItemsEntity> list =
+                menuItemsRepository
+                        .findByRestaurantRestaurantIdAndItemPriceBetween(
+                                restaurantId, min, max);
 
-        if (minPrice != null)
-            query.setParameter("minPrice", minPrice);
+        if (list == null || list.isEmpty()) {
+            throw new ResourceNotFoundException(
+                    "No items found for given filters");
+        }
 
-        if (maxPrice != null)
-            query.setParameter("maxPrice", maxPrice);
-
-        if (restaurantId != null)
-            query.setParameter("restaurantId", restaurantId);
-
-        return query.getResultList();
+        return list;
     }
 
     // ---------------- BULK ----------------
@@ -105,6 +117,15 @@ public class MenuItemsDAO {
     }
 
     public void deleteByRestaurant(Integer restaurantId) {
+
+        List<MenuItemsEntity> list =
+                menuItemsRepository.findByRestaurantRestaurantId(restaurantId);
+
+        if (list == null || list.isEmpty()) {
+            throw new ResourceNotFoundException(
+                    "No items found for restaurant id: " + restaurantId);
+        }
+
         menuItemsRepository.deleteByRestaurantId(restaurantId);
     }
 
@@ -112,9 +133,9 @@ public class MenuItemsDAO {
 
     public List<MenuItemsEntity> sortItems(String field, String direction) {
 
-        Sort sort = direction.equalsIgnoreCase("desc") ?
-                Sort.by(field).descending() :
-                Sort.by(field).ascending();
+        Sort sort = direction.equalsIgnoreCase("desc")
+                ? Sort.by(field).descending()
+                : Sort.by(field).ascending();
 
         return menuItemsRepository.findAll(sort);
     }
@@ -125,47 +146,61 @@ public class MenuItemsDAO {
         Pageable pageable = PageRequest.of(page, size);
         return menuItemsRepository.findAll(pageable);
     }
+ // ---------------- COMPLEX METHODS ----------------
 
-    // ---------------- FULL DYNAMIC FILTER ----------------
+ // Items ordered by a specific customer
+ public List<MenuItemsEntity> findItemsByCustomer(Integer customerId) {
 
-    public List<MenuItemsEntity> dynamicFilter(Map<String, Object> filters) {
+     List<MenuItemsEntity> list =
+             menuItemsRepository.findItemsByCustomer(customerId);
 
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<MenuItemsEntity> cq = cb.createQuery(MenuItemsEntity.class);
-        Root<MenuItemsEntity> root = cq.from(MenuItemsEntity.class);
+     if (list == null || list.isEmpty()) {
+         throw new ResourceNotFoundException(
+                 "No items found for customer id: " + customerId);
+     }
 
-        List<Predicate> predicates = new ArrayList<>();
+     return list;
+ }
 
-        if (filters.containsKey("itemName")) {
-            predicates.add(cb.like(
-                    cb.lower(root.get("itemName")),
-                    "%" + filters.get("itemName").toString().toLowerCase() + "%"
-            ));
-        }
+ // Items ordered on a specific date
+ public List<MenuItemsEntity> findItemsByOrderDate(String date) {
 
-        if (filters.containsKey("minPrice")) {
-            predicates.add(cb.greaterThanOrEqualTo(
-                    root.get("itemPrice"),
-                    Double.valueOf(filters.get("minPrice").toString())
-            ));
-        }
+     List<MenuItemsEntity> list =
+             menuItemsRepository.findItemsByOrderDate(date);
 
-        if (filters.containsKey("maxPrice")) {
-            predicates.add(cb.lessThanOrEqualTo(
-                    root.get("itemPrice"),
-                    Double.valueOf(filters.get("maxPrice").toString())
-            ));
-        }
+     if (list == null || list.isEmpty()) {
+         throw new ResourceNotFoundException(
+                 "No items found for given date");
+     }
 
-        if (filters.containsKey("restaurantId")) {
-            predicates.add(cb.equal(
-                    root.get("restaurant").get("restaurantId"),
-                    filters.get("restaurantId")
-            ));
-        }
+     return list;
+ }
 
-        cq.where(predicates.toArray(new Predicate[0]));
+ // Top selling items (most frequently ordered)
+ public List<MenuItemsEntity> findTopSellingItems() {
 
-        return entityManager.createQuery(cq).getResultList();
-    }
+     List<MenuItemsEntity> list =
+             menuItemsRepository.findTopSellingItems();
+
+     if (list == null || list.isEmpty()) {
+         throw new ResourceNotFoundException(
+                 "No top selling items found");
+     }
+
+     return list;
+ }
+
+ // Items with rating >= given value
+ public List<MenuItemsEntity> findItemsByRating(int rating) {
+
+     List<MenuItemsEntity> list =
+             menuItemsRepository.findItemsByRating(rating);
+
+     if (list == null || list.isEmpty()) {
+         throw new ResourceNotFoundException(
+                 "No items found with rating >= " + rating);
+     }
+
+     return list;
+ }
 }
