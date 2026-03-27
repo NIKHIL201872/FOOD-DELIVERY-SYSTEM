@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.foodservice.dto.ApiResponse;
 import com.foodservice.dto.Orders;
-import com.foodservice.entity.OrderItemsEntity;
 import com.foodservice.services.OrderService;
 
 import jakarta.validation.Valid;
@@ -27,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class OrdersController {
 
     private final OrderService service;
-    //private final OrderItemsService orderItemsService; // ✅ ADD THIS
+   // private final OrderItemsService orderItemsService; // ✅ ADD THIS
 
     @PostMapping
     public ResponseEntity<ApiResponse<Orders>> create(@Valid @RequestBody Orders dto) {

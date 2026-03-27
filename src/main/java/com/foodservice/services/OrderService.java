@@ -48,7 +48,15 @@ public class OrderService {
         order.setRestaurant(restaurant);
         order.setOrderStatus("CREATED");
 
-        return OrderMapper.toDTO(orderDAO.save(order));
+        OrdersEntity saved = orderDAO.save(order);
+
+        Orders dt = new Orders();
+        dt.setOrderId(saved.getOrderId());
+        dt.setOrderStatus(saved.getOrderStatus());
+        dt.setCustomerId(saved.getCustomer().getCustomerId());
+        dt.setRestaurantId(saved.getRestaurant().getRestaurantId());
+
+        return dt;
     }
 
     // ASSIGN DRIVER
@@ -72,7 +80,16 @@ public class OrderService {
 
     // GET ORDER
     public Orders getOrder(Integer orderId) {
-        return OrderMapper.toDTO(orderDAO.findById(orderId));
+
+        OrdersEntity order = orderDAO.findById(orderId);
+
+        Orders d = new Orders();
+        d.setOrderId(order.getOrderId());
+        d.setOrderStatus(order.getOrderStatus());
+        d.setCustomerId(order.getCustomer().getCustomerId());
+        d.setRestaurantId(order.getRestaurant().getRestaurantId());
+
+        return d;
     }
 
     // FULL DETAILS
