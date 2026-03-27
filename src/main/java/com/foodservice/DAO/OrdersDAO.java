@@ -1,10 +1,28 @@
 package com.foodservice.DAO;
 
 import com.foodservice.entity.OrdersEntity;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.foodservice.repository.OrdersRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
-public interface OrdersDAO extends JpaRepository<OrdersEntity, Integer> {
-    List<OrdersEntity> findByCustomerId(Integer customerId);
-    List<OrdersEntity> findByDeliveryDriverId(Integer driverId);
+@Repository
+@RequiredArgsConstructor
+public class OrdersDAO {
+
+    private final OrdersRepository orderRepo;
+
+    public OrdersEntity save(OrdersEntity order) {
+        return orderRepo.save(order);
+    }
+
+    public OrdersEntity findById(Integer id) {
+        return orderRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+    }
+
+    public List<OrdersEntity> findAll() {
+        return orderRepo.findAll();
+    }
 }
