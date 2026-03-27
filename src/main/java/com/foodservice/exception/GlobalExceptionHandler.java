@@ -1,50 +1,36 @@
 package com.foodservice.exception;
 
-import org.springframework.http.HttpStatus;
+
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-	@ExceptionHandler(DuplicateCouponException.class)
-	@ResponseStatus(HttpStatus.CONFLICT)
-	public String duplicateCouponHandler(DuplicateCouponException ex) {
-	    return ex.getExceptionmsg(); 
-	}
-
-    @ExceptionHandler(CouponNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String couponNotFoundHandler(CouponNotFoundException ex) {
-        return ex.getExceptionmsg();
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNotFound(ResourceNotFoundException ex) {
+        return new ResponseEntity<>(
+                new ErrorResponse(ex.getMessage()),
+                HttpStatus.NOT_FOUND
+        );
     }
 
-    @ExceptionHandler(CouponExpiredException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String couponExpiredHandler(CouponExpiredException ex) {
-        return ex.getExceptionmsg();
-    }
-    
-    @ExceptionHandler(NoRecordsFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String NoRecordsFoundHandler(NoRecordsFoundException ex) {
-        return ex.getExceptionmsg();
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleBadRequest(IllegalArgumentException ex) {
+        return new ResponseEntity<>(
+                new ErrorResponse(ex.getMessage()),
+                HttpStatus.BAD_REQUEST
+        );
     }
 
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public String generalHandler(Exception ex) {
-        return "Something went wrong: " + ex.getMessage();
+    public ResponseEntity<ErrorResponse> handleGeneral(Exception ex) {
+
+        ex.printStackTrace(); // DEBUG
+
+        return new ResponseEntity<>(
+                new ErrorResponse("Server Error: " + ex.getMessage()),
+                HttpStatus.INTERNAL_SERVER_ERROR
+        );
     }
-  
-    @ExceptionHandler(NoCustomerException.class)
-	public void NoCustomerExceptionHandler(NoCustomerException ex) {
-		String msg = ex.getExceptionMsg();
-		System.out.println(msg);
-	}
-	
-	@ExceptionHandler(NoAddressException.class)
-	public void NoAddressExceptionHandler(NoAddressException ex) {
-		String msg = ex.getExceptionMsg();
-		System.out.println(msg);
-	}
 }
