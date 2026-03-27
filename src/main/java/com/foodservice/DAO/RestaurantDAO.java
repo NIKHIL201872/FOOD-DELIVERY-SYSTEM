@@ -1,12 +1,9 @@
 package com.foodservice.DAO;
 
 import java.util.List;
-
 import org.springframework.stereotype.Repository;
-
 import com.foodservice.entity.RestaurantsEntity;
 import com.foodservice.repository.RestaurantsRepository;
-
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -15,8 +12,8 @@ public class RestaurantDAO {
 
     private final RestaurantsRepository repo;
 
-    public RestaurantsEntity save(RestaurantsEntity restaurant) {
-        return repo.save(restaurant);
+    public RestaurantsEntity save(RestaurantsEntity entity) {
+        return repo.save(entity);
     }
 
     public List<RestaurantsEntity> findAll() {
@@ -27,24 +24,19 @@ public class RestaurantDAO {
         return repo.findById(id).orElse(null);
     }
 
-    public void delete(RestaurantsEntity restaurant) {
-        repo.delete(restaurant);
+    public void delete(RestaurantsEntity entity) {
+        repo.delete(entity);
     }
 
-    public List<RestaurantsEntity> findDynamic(String name, String address, String phone) {
+    public List<RestaurantsEntity> findByName(String name) {
+        return repo.findByRestaurantNameContainingIgnoreCase(name);
+    }
 
-        if (name != null) {
-            return repo.findByRestaurantNameContainingIgnoreCase(name);
-        }
+    public List<RestaurantsEntity> findByAddress(String address) {
+        return repo.findByRestaurantAddressContainingIgnoreCase(address);
+    }
 
-        if (address != null) {
-            return repo.findByRestaurantAddressContainingIgnoreCase(address);
-        }
-
-        if (phone != null) {
-            return repo.findByRestaurantPhone(phone);
-        }
-
-        return repo.findAll();
+    public List<RestaurantsEntity> findByPhone(String phone) {
+        return repo.findByRestaurantPhoneContaining(phone);
     }
 }

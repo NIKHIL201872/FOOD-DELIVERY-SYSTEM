@@ -1,5 +1,7 @@
 package com.foodservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,10 +16,12 @@ public class OrderCouponsEntity {
     @Id
     @ManyToOne
     @JoinColumn(name = "order_id")
+    @JsonIgnore
     private OrdersEntity order;
 
     @Id
     @ManyToOne
     @JoinColumn(name = "coupon_id")
+    @JsonIgnore
     private CouponsEntity coupon;
 }

@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name = "customers")
 @Data
@@ -22,7 +24,8 @@ public class CustomersEntity {
 
     private String customerPhone;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<DeliveryAddressesEntity> addresses;
 
     @OneToMany(mappedBy = "customer")
