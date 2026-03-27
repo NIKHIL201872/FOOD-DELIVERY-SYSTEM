@@ -1,8 +1,6 @@
 package com.foodservice.repository;
 
-
 import java.util.List;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.foodservice.entity.RatingEntity;
 

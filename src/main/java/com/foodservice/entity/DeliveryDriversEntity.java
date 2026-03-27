@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name = "deliverydrivers")
 @Data
@@ -20,5 +22,6 @@ public class DeliveryDriversEntity {
     private String driverVehicle;
 
     @OneToMany(mappedBy = "deliveryDriver")
+    @JsonManagedReference 
     private List<OrdersEntity> orders;
 }
