@@ -12,7 +12,11 @@ import lombok.*;
 public class OrderItemsEntity {
 
     @Id
+<<<<<<< Updated upstream
     //@GeneratedValue(strategy = GenerationType.IDENTITY)
+=======
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+>>>>>>> Stashed changes
     @Column(name = "order_item_id")
     private Integer orderItemId;
 
@@ -27,5 +31,9 @@ public class OrderItemsEntity {
     @ManyToOne
     @JoinColumn(name = "item_id")
     @JsonIgnore
+<<<<<<< Updated upstream
     private MenuItemsEntity item;
+=======
+    private MenuItemsEntity menuItem;
+>>>>>>> Stashed changes
 }
