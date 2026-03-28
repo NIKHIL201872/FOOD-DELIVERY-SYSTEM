@@ -14,6 +14,7 @@ import com.foodservice.dto.Customers;
 import com.foodservice.entity.CustomersEntity;
 import com.foodservice.exception.NoCustomerException;
 
+@Service
 public class CustomerService {
 
 	@Autowired
