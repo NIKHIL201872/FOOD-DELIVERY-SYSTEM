@@ -8,13 +8,14 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "menuitems")
-@Data
+@Setter
+@Getter
+
 @NoArgsConstructor
 @AllArgsConstructor
 public class MenuItemsEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer itemId;
 
     private String itemName;
@@ -22,6 +23,7 @@ public class MenuItemsEntity {
     @Column(columnDefinition = "TEXT")
     private String itemDescription;
 
+    @Column(precision = 38, scale = 2)
     private BigDecimal itemPrice;
 
     @ManyToOne

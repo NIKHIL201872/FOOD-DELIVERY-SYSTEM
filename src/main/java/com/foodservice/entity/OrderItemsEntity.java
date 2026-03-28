@@ -1,7 +1,6 @@
 package com.foodservice.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,9 +12,11 @@ import lombok.*;
 public class OrderItemsEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_item_id")
     private Integer orderItemId;
 
+    @Column(name = "quantity")
     private Integer quantity;
 
     @ManyToOne
