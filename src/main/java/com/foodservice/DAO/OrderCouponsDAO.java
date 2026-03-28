@@ -14,13 +14,15 @@ public class OrderCouponsDAO {
 
     @Autowired
     private OrderCouponsRepository repo;
-    
-    /*@Autowired
-    private OrdersRepository orderRepo;   
-    */
+
+    /*
+     * @Autowired
+     * private OrdersRepository orderRepo;
+     */
     public OrderCouponsEntity save(OrderCouponsEntity oc) {
         return repo.save(oc);
     }
+
     public List<OrderCouponsEntity> findAll() {
         return repo.findAll();
     }
@@ -41,8 +43,9 @@ public class OrderCouponsDAO {
         repo.deleteByCoupon_CouponId(couponId);
     }
 
-    /*public OrdersEntity findOrderById(Integer orderId) {
-        return orderRepo.findById(orderId).orElse(null);
-    }
-    */
+    /*
+     * public OrdersEntity findOrderById(Integer orderId) {
+     * return orderRepo.findById(orderId).orElse(null);
+     * }
+     */
 }

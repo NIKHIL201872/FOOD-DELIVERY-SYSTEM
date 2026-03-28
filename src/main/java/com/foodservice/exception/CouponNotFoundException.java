@@ -1,11 +1,8 @@
 package com.foodservice.exception;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+public class CouponNotFoundException extends RuntimeException {
 
-
-@AllArgsConstructor
-@Getter
-public class CouponNotFoundException extends RuntimeException{
-	private String exceptionmsg;
+    public CouponNotFoundException(String message) {
+       super(message);
+   }
 }
