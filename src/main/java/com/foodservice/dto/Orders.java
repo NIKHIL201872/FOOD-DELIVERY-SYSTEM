@@ -1,16 +1,22 @@
 package com.foodservice.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Orders {
+
     private Integer orderId;
-    private LocalDateTime orderDate;
-    private String orderStatus;
+
+    @NotNull(message = "Customer ID is required")
     private Integer customerId;
+
+    @NotNull(message = "Restaurant ID is required")
     private Integer restaurantId;
+
     private Integer deliveryDriverId;
+
+    private String orderStatus;
 }
