@@ -7,11 +7,11 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.foodservice.entity.CustomersEntity;
 
-public interface CustomersRepository extends JpaRepository<CustomersEntity,Integer>{
-	@Query("SELECT MAX(c.customerId) FROM CustomersEntity c")
+public interface CustomersRepository extends JpaRepository<CustomersEntity, Integer> {
+    @Query("SELECT MAX(c.customerId) FROM CustomersEntity c")
     Integer MaxCustomerId();
-	
-	List<CustomersEntity> findByCustomerName(String customerName);
+
+    List<CustomersEntity> findByCustomerName(String customerName);
 
     CustomersEntity findByCustomerEmail(String customerEmail);
 

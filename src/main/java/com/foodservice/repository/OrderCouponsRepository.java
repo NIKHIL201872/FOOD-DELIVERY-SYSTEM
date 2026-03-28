@@ -10,6 +10,6 @@ public interface OrderCouponsRepository extends JpaRepository<OrderCouponsEntity
     List<OrderCouponsEntity> findByOrder_OrderId(Integer orderId);
 
     List<OrderCouponsEntity> findByCoupon_CouponId(Integer couponId);
-    
+
     void deleteByCoupon_CouponId(Integer couponId);
 }
