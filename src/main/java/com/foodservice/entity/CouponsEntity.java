@@ -12,16 +12,13 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class CouponsEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer couponId;
+	@Id
+	private Integer couponId;
 
     @Column(unique = true)
     private String couponCode;
 
     private BigDecimal discountAmount;
 
-    private LocalDate expiryDate;
-    
-    
+    private LocalDate expiryDate;    
 }

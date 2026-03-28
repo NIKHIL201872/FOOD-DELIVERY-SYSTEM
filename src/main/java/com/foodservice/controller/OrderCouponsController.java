@@ -19,26 +19,27 @@ public class OrderCouponsController {
     private OrderCouponsService service;
 
     /*@PostMapping("/{orderId}/apply-coupon")
-    public String applyCoupon(@PathVariable Integer orderId,
-                              @RequestParam Integer couponId) {
+    public String applyCoupon(@PathVariable ("orderId") Integer orderId,
+                              @RequestParam ("couponId") Integer couponId) {
         return service.applyCoupon(orderId, couponId);
-    }*/
+    }
+    */
 
 
     @GetMapping("/{orderId}/coupons")
-    public List<Object> getCoupons(@PathVariable Integer orderId) {
+    public List<Object> getCoupons(@PathVariable ("orderId") Integer orderId) {
         return service.getCouponsByOrder(orderId);
     }
 
     @GetMapping("/coupon/{couponId}")
-    public List<Object> getByCoupon(@PathVariable Integer couponId) {
+    public List<Object> getByCoupon(@PathVariable ("couponId") Integer couponId) {
         return service.getByCouponId(couponId);
     }
 
     @GetMapping("/order/{orderId}/coupon/{couponId}")
     public List<Object> getByOrderAndCoupon(
-            @PathVariable Integer orderId,
-            @PathVariable Integer couponId) {
+            @PathVariable ("orderId") Integer orderId,
+            @PathVariable ("couponId") Integer couponId) {
 
         return service.getByOrderAndCoupon(orderId, couponId);
     }
