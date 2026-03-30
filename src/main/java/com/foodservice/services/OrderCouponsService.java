@@ -1,5 +1,6 @@
 package com.foodservice.services;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class OrderCouponsService {
     @Autowired
     private CouponsDAO couponsDAO;
 
-    /*public String applyCoupon(Integer orderId, Integer couponId) {
+    public String applyCoupon(Integer orderId, Integer couponId) {
 
         OrdersEntity order = orderCouponsDAO.findOrderById(orderId);
         if (order == null) {
@@ -52,7 +53,7 @@ public class OrderCouponsService {
 
         return "Coupon Applied Successfully";
     }
-    */
+    
 
     public List<Object> getCouponsByOrder(Integer orderId) {
 
