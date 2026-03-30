@@ -11,7 +11,7 @@ import com.foodservice.services.CouponsService;
 import com.foodservice.services.OrderCouponsService;
 
 @RestController
-@RequestMapping("/api/orders")
+@RequestMapping("/api/ordercoupons")
 @CrossOrigin("*")
 public class OrderCouponsController {
 

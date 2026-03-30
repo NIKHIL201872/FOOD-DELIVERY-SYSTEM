@@ -3,11 +3,17 @@ package com.foodservice.services;
 import com.foodservice.DAO.DeliveryDriversDAO;
 import com.foodservice.dto.DeliveryDrivers;
 import com.foodservice.entity.DeliveryDriversEntity;
+import com.foodservice.entity.OrdersEntity;
+import com.foodservice.exception.BadRequestException;
+import com.foodservice.exception.ResourceConflictException;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -16,19 +22,42 @@ public class DeliveryDriversService {
     private final DeliveryDriversDAO driverDAO;
 
     // CREATE DRIVER
-    public DeliveryDrivers createDriver(DeliveryDrivers dto) {
+    public String createDriver(DeliveryDrivers dto) {
 
-        DeliveryDriversEntity driver = new DeliveryDriversEntity();
-        driver.setDriverName(dto.getDriverName());
-        driver.setDriverPhone(dto.getDriverPhone());
-        driver.setDriverVehicle(dto.getDriverVehicle());
+        
+        if (dto == null) {
+            throw new BadRequestException("Driver cannot be null");
+        }
 
-        DeliveryDriversEntity saved = driverDAO.save(driver);
 
-        return mapToDTO(saved);
-    }
+        if (dto.getDriverId() == null) {
+            throw new BadRequestException("Driver ID must be provided");
+        }
 
-    // GET ONE DRIVER
+        
+        if (driverDAO.existsById(dto.getDriverId())) {
+            throw new ResourceConflictException("Driver ID already exists");
+        }
+
+        
+        driverDAO.save(convertToEntity(dto));
+
+        return "Driver inserted successfully with ID: " + dto.getDriverId();
+    }    
+
+    private DeliveryDriversEntity convertToEntity(DeliveryDrivers dto) {
+    	DeliveryDriversEntity entity = new DeliveryDriversEntity();
+
+        
+    	entity.setDriverId(dto.getDriverId());
+        entity.setDriverName(dto.getDriverName());
+        entity.setDriverPhone(dto.getDriverPhone());
+        entity.setDriverVehicle(dto.getDriverVehicle());
+
+        return entity;
+	}
+
+	// GET ONE DRIVER
     public DeliveryDrivers getDriver(Integer id) {
         DeliveryDriversEntity driver = driverDAO.findById(id);
         return mapToDTO(driver);
@@ -67,5 +96,18 @@ public class DeliveryDriversService {
                 driver.getDriverPhone(),
                 driver.getDriverVehicle()
         );
+    }
+ //  // 🔥 BUSINESS LOGIC
+
+    public void assignDriverToOrder(Integer driverId, Integer orderId) {
+    	driverDAO.assignDriverToOrder(driverId, orderId);
+    }
+
+    public List<OrdersEntity> getOrdersByDriver(Integer driverId) {
+        return driverDAO.getOrdersByDriver(driverId);
+    }
+
+    public void completeDelivery(Integer driverId, Integer orderId) {
+    	driverDAO.completeDelivery(driverId, orderId);
     }
 }
