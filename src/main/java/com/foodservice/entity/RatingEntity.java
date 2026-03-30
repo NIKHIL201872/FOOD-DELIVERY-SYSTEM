@@ -1,5 +1,7 @@
 package com.foodservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,6 +14,7 @@ public class RatingEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="rating_id")
     private Integer ratingId;
 
     private Integer rating;
@@ -21,6 +24,7 @@ public class RatingEntity {
 
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
+    @JsonIgnore
     private OrdersEntity order;
 
     @ManyToOne

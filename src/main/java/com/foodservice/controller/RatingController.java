@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import com.foodservice.dto.Rating;
 import com.foodservice.entity.RatingEntity;
 import com.foodservice.services.RatingService;
+import com.foodservice.dto.RatingOnlyDTO;
 
 @RestController
 @RequestMapping("/api/ratings")
@@ -15,12 +16,14 @@ public class RatingController {
 
     @Autowired
     private RatingService ratingService;
+     
 
     // ✅ CREATE
-//    @PostMapping
-//    public RatingEntity add(@RequestBody Rating dto) {
-//        return ratingService.addRating(dto);
-//    }
+    @PostMapping
+    public String add(@RequestBody Rating dto) {
+         ratingService.addRating(dto);
+         return "Rating created";
+    }
 
     // ✅ GET ALL
     @GetMapping
@@ -36,17 +39,17 @@ public class RatingController {
 
     // ✅ GET BY RESTAURANT
     @GetMapping("/restaurant/{restaurantId}")
-    public List<RatingEntity> getByRestaurant(@PathVariable("restaurantId") Integer restaurantId) {
+    public List<Rating> getByRestaurant(@PathVariable("restaurantId") Integer restaurantId) {
         return ratingService.getByRestaurant(restaurantId);
     }
 
     // ✅ GET BY ORDER
     @GetMapping("/order/{orderId}")
-    public List<RatingEntity> getByOrder(@PathVariable("orderId") Integer orderId) {
+    public List<Rating> getByOrder(@PathVariable("orderId") Integer orderId) {
         return ratingService.getByOrder(orderId);
     }
 
-    // ✅ GET BY RATING VALUE
+    // ✅ GET BY RATING VALUE with restaurant menu
     @GetMapping("/value/{rating}")
     public List<RatingEntity> getByRating(@PathVariable("rating") Integer rating) {
         return ratingService.getByRating(rating);
@@ -63,5 +66,13 @@ public class RatingController {
     public String delete(@PathVariable("id") Integer id) {
         ratingService.delete(id);
         return "Rating deleted successfully";
+    }
+    @GetMapping("/flat")
+    public List<RatingOnlyDTO> getAllFlatRatings() {
+        return ratingService.getAllFlat();
+    }
+    @GetMapping("/flat/{id}")
+    public RatingOnlyDTO getFlatRatingById(@PathVariable Integer id) {
+        return ratingService.getFlatById(id);
     }
 }

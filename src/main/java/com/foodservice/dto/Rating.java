@@ -1,5 +1,7 @@
 package com.foodservice.dto;
 
+import com.foodservice.entity.RestaurantsEntity;
+
 import lombok.*;
 
 @Data
@@ -11,4 +13,5 @@ public class Rating {
     private Integer restaurantId;
     private Integer rating;
     private String review;
+    private Restaurants restaurants;
 }

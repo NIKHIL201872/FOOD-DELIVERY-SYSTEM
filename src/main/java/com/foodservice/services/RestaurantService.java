@@ -21,6 +21,7 @@ public class RestaurantService {
         }
 
         RestaurantsEntity entity = new RestaurantsEntity();
+       // entity.setRestaurantId(dto.getRestaurantId());
         entity.setRestaurantName(dto.getRestaurantName());
         entity.setRestaurantAddress(dto.getRestaurantAddress());
         entity.setRestaurantPhone(dto.getRestaurantPhone());
