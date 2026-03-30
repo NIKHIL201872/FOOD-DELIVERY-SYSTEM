@@ -5,6 +5,7 @@ import lombok.*;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "restaurants")
@@ -22,6 +23,7 @@ public class RestaurantsEntity {
     private String restaurantPhone;
 
     @OneToMany(mappedBy = "restaurant")
+    @JsonIgnore
     private List<MenuItemsEntity> menuItems;
 
     @OneToMany(mappedBy = "restaurant")
