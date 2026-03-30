@@ -13,7 +13,6 @@ import com.foodservice.services.CouponsService;
 
 @RestController
 @RequestMapping("/api/coupons")
-@CrossOrigin("*")
 public class CouponsController {
 
     @Autowired
