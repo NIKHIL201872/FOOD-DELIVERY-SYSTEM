@@ -1,5 +1,7 @@
 package com.foodservice.dto;
 
+import java.time.LocalDateTime;
+
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -19,4 +21,5 @@ public class Orders {
     private Integer deliveryDriverId;
 
     private String orderStatus;
+    private LocalDateTime orderDate;
 }

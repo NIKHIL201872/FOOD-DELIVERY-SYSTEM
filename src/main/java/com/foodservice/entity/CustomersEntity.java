@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
@@ -25,9 +26,11 @@ public class CustomersEntity {
     private String customerPhone;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-    @JsonManagedReference
+   // @JsonManagedReference
+    @JsonIgnore
     private List<DeliveryAddressesEntity> addresses;
 
     @OneToMany(mappedBy = "customer")
+    @JsonIgnore
     private List<OrdersEntity> orders;
 }

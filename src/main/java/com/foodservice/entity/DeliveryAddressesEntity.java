@@ -24,6 +24,6 @@ public class DeliveryAddressesEntity {
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
-    @JsonBackReference
+    //@JsonBackReference
     private CustomersEntity customer;
 }

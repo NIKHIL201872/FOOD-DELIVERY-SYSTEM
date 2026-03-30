@@ -28,9 +28,10 @@ public class MenuItemsDAO {
 
     public MenuItemsEntity findById(Integer id) {
         return menuItemsRepository.findById(id)
-                .orElseThrow(() -> 
+                .orElseThrow(() ->
                         new ResourceNotFoundException("Item not found with id: " + id));
     }
+
     public boolean existsById(Integer id) {
         return menuItemsRepository.existsById(id);
     }
@@ -98,9 +99,8 @@ public class MenuItemsDAO {
             Integer restaurantId, Double min, Double max) {
 
         List<MenuItemsEntity> list =
-                menuItemsRepository
-                        .findByRestaurantRestaurantIdAndItemPriceBetween(
-                                restaurantId, min, max);
+                menuItemsRepository.findByRestaurantRestaurantIdAndItemPriceBetween(
+                        restaurantId, min, max);
 
         if (list == null || list.isEmpty()) {
             throw new ResourceNotFoundException(
@@ -117,7 +117,6 @@ public class MenuItemsDAO {
     }
 
     public void deleteByRestaurant(Integer restaurantId) {
-
         List<MenuItemsEntity> list =
                 menuItemsRepository.findByRestaurantRestaurantId(restaurantId);
 
@@ -132,7 +131,6 @@ public class MenuItemsDAO {
     // ---------------- SORT ----------------
 
     public List<MenuItemsEntity> sortItems(String field, String direction) {
-
         Sort sort = direction.equalsIgnoreCase("desc")
                 ? Sort.by(field).descending()
                 : Sort.by(field).ascending();
@@ -146,61 +144,74 @@ public class MenuItemsDAO {
         Pageable pageable = PageRequest.of(page, size);
         return menuItemsRepository.findAll(pageable);
     }
- // ---------------- COMPLEX METHODS ----------------
 
- // Items ordered by a specific customer
- public List<MenuItemsEntity> findItemsByCustomer(Integer customerId) {
+    // ---------------- COMPLEX METHODS ----------------
 
-     List<MenuItemsEntity> list =
-             menuItemsRepository.findItemsByCustomer(customerId);
+    // Items ordered by a specific customer
+    public List<MenuItemsEntity> findItemsByCustomer(Integer customerId) {
+        List<MenuItemsEntity> list =
+                menuItemsRepository.findItemsByCustomer(customerId);
 
-     if (list == null || list.isEmpty()) {
-         throw new ResourceNotFoundException(
-                 "No items found for customer id: " + customerId);
-     }
+        if (list == null || list.isEmpty()) {
+            throw new ResourceNotFoundException(
+                    "No items found for customer id: " + customerId);
+        }
 
-     return list;
- }
+        return list;
+    }
 
- // Items ordered on a specific date
- public List<MenuItemsEntity> findItemsByOrderDate(String date) {
+    // Items ordered on a specific date
+    public List<MenuItemsEntity> findItemsByOrderDate(String date) {
+        List<MenuItemsEntity> list =
+                menuItemsRepository.findItemsByOrderDate(date);
 
-     List<MenuItemsEntity> list =
-             menuItemsRepository.findItemsByOrderDate(date);
+        if (list == null || list.isEmpty()) {
+            throw new ResourceNotFoundException(
+                    "No items found for given date");
+        }
 
-     if (list == null || list.isEmpty()) {
-         throw new ResourceNotFoundException(
-                 "No items found for given date");
-     }
+        return list;
+    }
 
-     return list;
- }
+    // Top selling items (most frequently ordered by quantity)
+    public List<MenuItemsEntity> findTopSellingItems() {
+        List<MenuItemsEntity> list =
+                menuItemsRepository.findTopSellingItems();
 
- // Top selling items (most frequently ordered)
- public List<MenuItemsEntity> findTopSellingItems() {
+        if (list == null || list.isEmpty()) {
+            throw new ResourceNotFoundException(
+                    "No top selling items found");
+        }
 
-     List<MenuItemsEntity> list =
-             menuItemsRepository.findTopSellingItems();
+        return list;
+    }
 
-     if (list == null || list.isEmpty()) {
-         throw new ResourceNotFoundException(
-                 "No top selling items found");
-     }
+    // Items from restaurants with rating >= given value
+    public List<MenuItemsEntity> findItemsByRating(int rating) {
+        List<MenuItemsEntity> list =
+                menuItemsRepository.findItemsByRating(rating);
 
-     return list;
- }
+        if (list == null || list.isEmpty()) {
+            throw new ResourceNotFoundException(
+                    "No items found with rating >= " + rating);
+        }
 
- // Items with rating >= given value
- public List<MenuItemsEntity> findItemsByRating(int rating) {
+        return list;
+    }
 
-     List<MenuItemsEntity> list =
-             menuItemsRepository.findItemsByRating(rating);
+    // Items from a specific restaurant with rating >= given value
+    public List<MenuItemsEntity> findItemsByRestaurantAndRating(
+            Integer restaurantId, int minRating) {
 
-     if (list == null || list.isEmpty()) {
-         throw new ResourceNotFoundException(
-                 "No items found with rating >= " + rating);
-     }
+        List<MenuItemsEntity> list =
+                menuItemsRepository.findItemsByRestaurantAndRating(restaurantId, minRating);
 
-     return list;
- }
+        if (list == null || list.isEmpty()) {
+            throw new ResourceNotFoundException(
+                    "No items found for restaurant id: " + restaurantId
+                    + " with rating >= " + minRating);
+        }
+
+        return list;
+    }
 }

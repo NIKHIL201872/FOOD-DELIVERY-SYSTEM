@@ -67,4 +67,15 @@ public interface MenuItemsRepository extends JpaRepository<MenuItemsEntity, Inte
     @Transactional
     @Query("DELETE FROM MenuItemsEntity m WHERE m.restaurant.restaurantId = :restaurantId")
     void deleteByRestaurantId(@Param("restaurantId") Integer restaurantId);
+    
+    
+    //----------FIND ITEMS BY RETAURANT ID AND RATING-------
+    @Query("SELECT DISTINCT m FROM MenuItemsEntity m " +
+    	       "WHERE m.restaurant.restaurantId = :restaurantId " +
+    	       "AND m.restaurant.restaurantId IN (" +
+    	       "SELECT r.restaurant.restaurantId FROM RatingEntity r " +
+    	       "WHERE r.rating >= :minRating)")
+    	List<MenuItemsEntity> findItemsByRestaurantAndRating(
+    	        @Param("restaurantId") Integer restaurantId,
+    	        @Param("minRating") int minRating);
 }
