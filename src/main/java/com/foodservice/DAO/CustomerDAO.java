@@ -54,4 +54,16 @@ public class CustomerDAO {
     public CustomersEntity getByPhone(String phone) {
         return customersRepository.findByCustomerPhone(phone);
     }
+    
+    public List<CustomersEntity> getByNameAndEmail(String name, String email) {
+        return customersRepository.findByNameAndEmail(name, email);
+    }
+
+    public List<CustomersEntity> getByNameAndPhone(String name, String phone) {
+        return customersRepository.findByNameAndPhone(name, phone);
+    }
+
+    public CustomersEntity getByEmailAndPhone(String email, String phone) {
+        return customersRepository.findByEmailAndPhone(email, phone);
+    }
 }

@@ -42,6 +42,19 @@ public class AddressDAO {
 	}
 	
 	
+	public List<DeliveryAddressesEntity> getByCityAndState(String city, String state) {
+        return addressRepository.findByCityAndState(city, state);
+    }
+
+    public List<DeliveryAddressesEntity> getByCityAndPostal(String city, String postalCode) {
+        return addressRepository.findByCityAndPostal(city, postalCode);
+    }
+
+    public List<DeliveryAddressesEntity> getByStateAndPostal(String state, String postalCode) {
+        return addressRepository.findByStateAndPostal(state, postalCode);
+    }
+    
+    
 	public DeliveryAddressesEntity getAddressById(int id) {
 		Optional<DeliveryAddressesEntity> optional = addressRepository.findById(id);
 		return optional.orElse(null);

@@ -1,6 +1,7 @@
 package com.foodservice.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -24,6 +25,7 @@ public class DeliveryAddressesEntity {
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
-    @JsonBackReference
+    //@JsonBackReference
+    //@JsonIgnore
     private CustomersEntity customer;
 }

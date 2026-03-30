@@ -8,9 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.foodservice.DAO.AddressDAO;
+import com.foodservice.DAO.CustomerDAO;
 import com.foodservice.dto.DeliveryAddresses;
+import com.foodservice.entity.CustomersEntity;
 import com.foodservice.entity.DeliveryAddressesEntity;
 import com.foodservice.exception.NoAddressException;
+import com.foodservice.exception.NoCustomerException;
 
 
 @Service
@@ -20,10 +23,29 @@ public class AddressService {
 	AddressDAO addressDAO;
 	
 	@Autowired
+	CustomerDAO customerDAO;
+	@Autowired
 	ModelMapper mapper;
 	
 	public void addAddress(DeliveryAddressesEntity address) {
-		addressDAO.saveAddress(address);
+//		DeliveryAddressesEntity entity=addressDAO.getById(address.getCustomer().getCustomerId());
+//		if(entity!=null) {
+//			throw new RuntimeException();
+//		}
+//		System.out.println(address.getCustomer());
+//		addressDAO.saveAddress(address);
+		
+		Integer customerId = address.getCustomer().getCustomerId();
+
+	    CustomersEntity customer = customerDAO.getCustomerById(customerId);
+
+	    if (customer == null) {
+	        throw new NoCustomerException("Customer not found with ID: " + customerId);
+	    }
+
+	    address.setCustomer(customer);
+
+	    addressDAO.saveAddress(address);
 	}
 	
 	// 🔹 BY ID
@@ -76,6 +98,47 @@ public class AddressService {
                 .collect(Collectors.toList());
     }
     
+ // 🔹 CITY + STATE
+    public List<DeliveryAddresses> getByCityAndState(String city, String state) throws NoAddressException {
+
+        List<DeliveryAddressesEntity> list = addressDAO.getByCityAndState(city, state);
+
+        if (list == null || list.isEmpty()) {
+            throw new NoAddressException("No address found for city & state");
+        }
+
+        return list.stream()
+                .map(e -> mapper.map(e, DeliveryAddresses.class))
+                .collect(Collectors.toList());
+    }
+
+    // 🔹 CITY + POSTAL
+    public List<DeliveryAddresses> getByCityAndPostal(String city, String postalCode) throws NoAddressException {
+
+        List<DeliveryAddressesEntity> list = addressDAO.getByCityAndPostal(city, postalCode);
+
+        if (list == null || list.isEmpty()) {
+            throw new NoAddressException("No address found for city & postalCode");
+        }
+
+        return list.stream()
+                .map(e -> mapper.map(e, DeliveryAddresses.class))
+                .collect(Collectors.toList());
+    }
+
+    // 🔹 STATE + POSTAL
+    public List<DeliveryAddresses> getByStateAndPostal(String state, String postalCode) throws NoAddressException {
+
+        List<DeliveryAddressesEntity> list = addressDAO.getByStateAndPostal(state, postalCode);
+
+        if (list == null || list.isEmpty()) {
+            throw new NoAddressException("No address found for state & postalCode");
+        }
+
+        return list.stream()
+                .map(e -> mapper.map(e, DeliveryAddresses.class))
+                .collect(Collectors.toList());
+    }
 	public List<DeliveryAddresses> getAddressesByCustomerId(int customerId) {
 		List<DeliveryAddressesEntity> list = addressDAO.getAddressesByCustomerId(customerId);
 		

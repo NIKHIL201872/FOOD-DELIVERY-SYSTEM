@@ -21,6 +21,7 @@ public class RestaurantsEntity {
     private String restaurantAddress;
     private String restaurantPhone;
 
+    
     @OneToMany(mappedBy = "restaurant")
     private List<MenuItemsEntity> menuItems;
 

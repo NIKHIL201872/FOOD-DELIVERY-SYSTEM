@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "orders")
@@ -15,7 +16,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 public class OrdersEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer orderId;
 
     private LocalDateTime orderDate;
@@ -24,12 +25,14 @@ public class OrdersEntity {
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
-    @JsonBackReference
+    //@JsonBackReference
+    @JsonIgnore
     private CustomersEntity customer;
 
     @ManyToOne
     @JoinColumn(name = "restaurant_id")
-    @JsonBackReference
+    //@JsonBackReference
+    @JsonIgnore
     private RestaurantsEntity restaurant;
 
     @ManyToOne
@@ -38,8 +41,10 @@ public class OrdersEntity {
     private DeliveryDriversEntity deliveryDriver;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<OrderItemsEntity> orderItems;
 
     @OneToMany(mappedBy = "order")
+    @JsonIgnore
     private List<OrderCouponsEntity> orderCoupons;
 }

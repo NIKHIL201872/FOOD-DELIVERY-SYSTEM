@@ -18,12 +18,12 @@ public class OrderCouponsController {
     @Autowired
     private OrderCouponsService service;
 
-    /*@PostMapping("/{orderId}/apply-coupon")
+    @PostMapping("/{orderId}/apply-coupon")
     public String applyCoupon(@PathVariable ("orderId") Integer orderId,
                               @RequestParam ("couponId") Integer couponId) {
         return service.applyCoupon(orderId, couponId);
     }
-    */
+    
 
 
     @GetMapping("/{orderId}/coupons")
