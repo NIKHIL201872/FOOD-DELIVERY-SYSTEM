@@ -5,7 +5,8 @@ import com.foodservice.dto.OrderItems;
 import com.foodservice.entity.MenuItemsEntity;
 import com.foodservice.entity.OrderItemsEntity;
 import com.foodservice.entity.OrdersEntity;
-import com.foodservice.exception.ResourceConflictException;
+import com.foodservice.exception.OrderItemConflictException;
+import com.foodservice.exception.OrderItemNotFoundException;
 import com.foodservice.exception.ResourceNotFoundException;
 import com.foodservice.repository.MenuItemsRepository;
 import com.foodservice.repository.OrdersRepository;
@@ -29,16 +30,33 @@ public class OrderItemsService {
     @Autowired
     private MenuItemsRepository menuItemsRepository;
 
+    private void validateOrderAndItemIds(OrderItems dto) {
+        if (dto == null) {
+            throw new OrderItemNotFoundException("Order item payload not found");
+        }
+        if (dto.getOrderId() == null) {
+            throw new OrderItemNotFoundException("Order id not found in request");
+        }
+        if (dto.getItemId() == null) {
+            throw new OrderItemNotFoundException("Item id not found in request");
+        }
+    }
+
     // ─────────────────────────────────────────
     //  CREATE
     // ─────────────────────────────────────────
     public String create(OrderItems dto) {
+        validateOrderAndItemIds(dto);
         OrdersEntity order = ordersRepository.findById(dto.getOrderId())
-                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+                .orElseThrow(() -> new OrderItemNotFoundException("Order not found"));
         MenuItemsEntity item = menuItemsRepository.findById(dto.getItemId())
-                .orElseThrow(() -> new ResourceNotFoundException("Item not found"));
+                .orElseThrow(() -> new OrderItemNotFoundException("Item not found"));
 
-        Integer newId = dao.getMaxId() + 1;
+        Integer maxId = dao.getMaxId();
+        Integer newId = (maxId == null ? 1 : maxId + 1);
+        dao.findById(newId).ifPresent(existing -> {
+            throw new OrderItemConflictException("OrderItem with id " + newId + " already exists");
+        });
         OrderItemsEntity entity = new OrderItemsEntity();
         entity.setOrderItemId(newId);
         entity.setQuantity(dto.getQuantity());
@@ -53,20 +71,21 @@ public class OrderItemsService {
     //  CREATE WITH MANUAL ID
     // ─────────────────────────────────────────
     public String createWithManualId(OrderItems dto) {
+        validateOrderAndItemIds(dto);
         if (dto.getOrderItemId() == null) {
-            throw new IllegalArgumentException("orderItemId must be provided");
+            throw new OrderItemNotFoundException("Order item id not found in request");
         }
 
         dao.findById(dto.getOrderItemId())
                 .ifPresent(existing -> {
-                    throw new ResourceConflictException(
+                    throw new OrderItemConflictException(
                             "OrderItem with id " + dto.getOrderItemId() + " already exists");
                 });
 
         OrdersEntity order = ordersRepository.findById(dto.getOrderId())
-                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+                .orElseThrow(() -> new OrderItemNotFoundException("Order not found"));
         MenuItemsEntity item = menuItemsRepository.findById(dto.getItemId())
-                .orElseThrow(() -> new ResourceNotFoundException("Item not found"));
+                .orElseThrow(() -> new OrderItemNotFoundException("Item not found"));
 
         OrderItemsEntity entity = new OrderItemsEntity();
         entity.setOrderItemId(dto.getOrderItemId());
@@ -92,8 +111,11 @@ public class OrderItemsService {
     //  GET BY ID
     // ─────────────────────────────────────────
     public OrderItems getById(Integer id) {
+        if (id == null) {
+            throw new OrderItemNotFoundException("OrderItem id not found in request");
+        }
         OrderItemsEntity entity = dao.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(
+                .orElseThrow(() -> new OrderItemNotFoundException(
                         "OrderItem not found with id " + id));
         return convertToDTO(entity);
     }
@@ -102,13 +124,17 @@ public class OrderItemsService {
     //  UPDATE BY ID
     // ─────────────────────────────────────────
     public String update(Integer id, OrderItems dto) {
+        if (id == null) {
+            throw new OrderItemNotFoundException("OrderItem id not found in request");
+        }
+        validateOrderAndItemIds(dto);
         OrderItemsEntity existing = dao.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(
+                .orElseThrow(() -> new OrderItemNotFoundException(
                         "OrderItem not found with id " + id));
         OrdersEntity order = ordersRepository.findById(dto.getOrderId())
-                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+                .orElseThrow(() -> new OrderItemNotFoundException("Order not found"));
         MenuItemsEntity item = menuItemsRepository.findById(dto.getItemId())
-                .orElseThrow(() -> new ResourceNotFoundException("Item not found"));
+                .orElseThrow(() -> new OrderItemNotFoundException("Item not found"));
 
         existing.setQuantity(dto.getQuantity());
         existing.setOrder(order);
@@ -122,8 +148,11 @@ public class OrderItemsService {
     //  DELETE BY ID
     // ─────────────────────────────────────────
     public String delete(Integer id) {
+        if (id == null) {
+            throw new OrderItemNotFoundException("OrderItem id not found in request");
+        }
         OrderItemsEntity existing = dao.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(
+                .orElseThrow(() -> new OrderItemNotFoundException(
                         "OrderItem not found with id " + id));
         dao.deleteById(existing.getOrderItemId());
         return "Order item deleted successfully for ID: " + id;
@@ -133,8 +162,11 @@ public class OrderItemsService {
     //  GET BY ORDER ID
     // ─────────────────────────────────────────
     public List<OrderItems> getByOrderId(Integer orderId) {
+        if (orderId == null) {
+            throw new OrderItemNotFoundException("Order id not found in request");
+        }
         ordersRepository.findById(orderId)
-                .orElseThrow(() -> new ResourceNotFoundException(
+                .orElseThrow(() -> new OrderItemNotFoundException(
                         "Order not found with id " + orderId));
         return dao.findByOrderId(orderId)
                 .stream()
@@ -146,8 +178,11 @@ public class OrderItemsService {
     //  1. GET BY ITEM ID
     // ─────────────────────────────────────────
     public List<OrderItems> getByItemId(Integer itemId) {
+        if (itemId == null) {
+            throw new OrderItemNotFoundException("Item id not found in request");
+        }
         menuItemsRepository.findById(itemId)
-                .orElseThrow(() -> new ResourceNotFoundException(
+                .orElseThrow(() -> new OrderItemNotFoundException(
                         "Item not found with id " + itemId));
         return dao.findByItemId(itemId)
                 .stream()
@@ -159,9 +194,15 @@ public class OrderItemsService {
     //  2. GET BY ORDER ID + ITEM ID
     // ─────────────────────────────────────────
     public List<OrderItems> getByOrderAndItem(Integer orderId, Integer itemId) {
+        if (orderId == null) {
+            throw new OrderItemNotFoundException("Order id not found in request");
+        }
+        if (itemId == null) {
+            throw new OrderItemNotFoundException("Item id not found in request");
+        }
         List<OrderItemsEntity> entities = dao.findByOrderIdAndItemId(orderId, itemId);
         if (entities.isEmpty()) {
-            throw new ResourceNotFoundException(
+            throw new OrderItemNotFoundException(
                     "No order item found for orderId " + orderId + " and itemId " + itemId);
         }
         return entities.stream()
@@ -173,12 +214,15 @@ public class OrderItemsService {
     //  3. GET TOTAL QUANTITY BY ORDER ID
     // ─────────────────────────────────────────
     public Integer getTotalQuantityByOrder(Integer orderId) {
+        if (orderId == null) {
+            throw new OrderItemNotFoundException("Order id not found in request");
+        }
         ordersRepository.findById(orderId)
-                .orElseThrow(() -> new ResourceNotFoundException(
+                .orElseThrow(() -> new OrderItemNotFoundException(
                         "Order not found with id " + orderId));
         List<OrderItemsEntity> items = dao.findByOrderId(orderId);
         if (items.isEmpty()) {
-            throw new ResourceNotFoundException("No items found for orderId " + orderId);
+            throw new OrderItemNotFoundException("No items found for orderId " + orderId);
         }
         return items.stream()
                 .mapToInt(OrderItemsEntity::getQuantity)
@@ -189,12 +233,15 @@ public class OrderItemsService {
     //  4. GET TOTAL PRICE BY ORDER ID
     // ─────────────────────────────────────────
     public Double getTotalPriceByOrder(Integer orderId) {
+        if (orderId == null) {
+            throw new OrderItemNotFoundException("Order id not found in request");
+        }
         ordersRepository.findById(orderId)
-                .orElseThrow(() -> new ResourceNotFoundException(
+                .orElseThrow(() -> new OrderItemNotFoundException(
                         "Order not found with id " + orderId));
         List<OrderItemsEntity> items = dao.findByOrderId(orderId);
         if (items.isEmpty()) {
-            throw new ResourceNotFoundException("No items found for orderId " + orderId);
+            throw new OrderItemNotFoundException("No items found for orderId " + orderId);
         }
         return items.stream()
                 .mapToDouble(entity ->
@@ -208,7 +255,7 @@ public class OrderItemsService {
     public List<OrderItems> getMostOrderedItems() {
         List<Object[]> result = dao.findMostOrderedItems();
         if (result.isEmpty()) {
-            throw new ResourceNotFoundException("No order items data found");
+            throw new OrderItemNotFoundException("No order items data found");
         }
         return result.stream().map(row -> {
             OrderItems dto = new OrderItems();
@@ -225,7 +272,7 @@ public class OrderItemsService {
     // ─────────────────────────────────────────
     public String createBulk(List<OrderItems> dtos) {
         if (dtos == null || dtos.isEmpty()) {
-            throw new IllegalArgumentException("Order items list cannot be empty");
+            throw new OrderItemNotFoundException("Order items payload not found");
         }
 
         Integer maxId = dao.getMaxId();
@@ -233,10 +280,10 @@ public class OrderItemsService {
 
         for (OrderItems dto : dtos) {
             OrdersEntity order = ordersRepository.findById(dto.getOrderId())
-                    .orElseThrow(() -> new ResourceNotFoundException(
+                    .orElseThrow(() -> new OrderItemNotFoundException(
                             "Order not found with id " + dto.getOrderId()));
             MenuItemsEntity item = menuItemsRepository.findById(dto.getItemId())
-                    .orElseThrow(() -> new ResourceNotFoundException(
+                    .orElseThrow(() -> new OrderItemNotFoundException(
                             "Item not found with id " + dto.getItemId()));
 
             OrderItemsEntity entity = new OrderItemsEntity();
@@ -255,12 +302,15 @@ public class OrderItemsService {
     //  7. DELETE ALL ITEMS BY ORDER ID
     // ─────────────────────────────────────────
     public String deleteByOrderId(Integer orderId) {
+        if (orderId == null) {
+            throw new OrderItemNotFoundException("Order id not found in request");
+        }
         ordersRepository.findById(orderId)
-                .orElseThrow(() -> new ResourceNotFoundException(
+                .orElseThrow(() -> new OrderItemNotFoundException(
                         "Order not found with id " + orderId));
         List<OrderItemsEntity> items = dao.findByOrderId(orderId);
         if (items.isEmpty()) {
-            throw new ResourceNotFoundException("No items found for orderId " + orderId);
+            throw new OrderItemNotFoundException("No items found for orderId " + orderId);
         }
         dao.deleteAllByOrderId(orderId);
         return "All order items deleted successfully for Order ID: " + orderId;
@@ -270,11 +320,14 @@ public class OrderItemsService {
     //  8. UPDATE QUANTITY ONLY (PATCH)
     // ─────────────────────────────────────────
     public String updateQuantity(Integer id, Integer quantity) {
+        if (id == null) {
+            throw new OrderItemNotFoundException("OrderItem id not found in request");
+        }
         if (quantity <= 0) {
-            throw new IllegalArgumentException("Quantity must be greater than 0");
+            throw new OrderItemNotFoundException("Quantity parameter not found or invalid");
         }
         OrderItemsEntity existing = dao.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(
+                .orElseThrow(() -> new OrderItemNotFoundException(
                         "OrderItem not found with id " + id));
         existing.setQuantity(quantity);
         dao.save(existing);
@@ -285,12 +338,15 @@ public class OrderItemsService {
     //  9. GET ENRICHED ORDER ITEM DETAILS
     // ─────────────────────────────────────────
     public List<OrderItems> getOrderItemDetails(Integer orderId) {
+        if (orderId == null) {
+            throw new OrderItemNotFoundException("Order id not found in request");
+        }
         ordersRepository.findById(orderId)
-                .orElseThrow(() -> new ResourceNotFoundException(
+                .orElseThrow(() -> new OrderItemNotFoundException(
                         "Order not found with id " + orderId));
         List<OrderItemsEntity> items = dao.findByOrderId(orderId);
         if (items.isEmpty()) {
-            throw new ResourceNotFoundException("No items found for orderId " + orderId);
+            throw new OrderItemNotFoundException("No items found for orderId " + orderId);
         }
         return items.stream()
                 .map(entity -> {
@@ -311,12 +367,16 @@ public class OrderItemsService {
 		//  10. GET MENU ITEM BY ORDER ITEM ID
 		// ─────────────────────────────────────────
 		public OrderItems getMenuItemByOrderItemId(Integer id) {
+		    if (id == null) {
+		        throw new OrderItemNotFoundException("OrderItem id not found in request");
+		    }
 		    OrderItemsEntity entity = dao.findById(id)
-		            .orElseThrow(() -> new ResourceNotFoundException(
+		            .orElseThrow(() -> new OrderItemNotFoundException(
 		                    "OrderItem not found with id " + id));
 		
 		    OrderItems dto = new OrderItems();
 		    dto.setOrderItemId(entity.getOrderItemId());
+		    dto.setOrderId(entity.getOrder().getOrderId());
 		    dto.setItemId(entity.getItem().getItemId());
 		    dto.setItemName(entity.getItem().getItemName());
 		    dto.setItemPrice(entity.getItem().getItemPrice());

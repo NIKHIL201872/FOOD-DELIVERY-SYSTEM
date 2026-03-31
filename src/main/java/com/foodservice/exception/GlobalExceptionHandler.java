@@ -111,6 +111,28 @@ public class GlobalExceptionHandler {
         );
     }
 
+    // ✅ MenuItem Conflict
+    @ExceptionHandler(MenuItemConflictException.class)
+    public ResponseEntity<ApiErrorResponse> handleMenuItemConflict(
+            MenuItemConflictException ex, HttpServletRequest request) {
+
+        return new ResponseEntity<>(
+                buildResponse(ex, HttpStatus.CONFLICT, request),
+                HttpStatus.CONFLICT
+        );
+    }
+
+    // ✅ OrderItem Conflict
+    @ExceptionHandler(OrderItemConflictException.class)
+    public ResponseEntity<ApiErrorResponse> handleOrderItemConflict(
+            OrderItemConflictException ex, HttpServletRequest request) {
+
+        return new ResponseEntity<>(
+                buildResponse(ex, HttpStatus.CONFLICT, request),
+                HttpStatus.CONFLICT
+        );
+    }
+
     // ✅ Resource Not Found
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleNotFound(
@@ -122,6 +144,37 @@ public class GlobalExceptionHandler {
         );
     }
 
+    // ✅ MenuItem Not Found
+    @ExceptionHandler(MenuItemNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleMenuItemNotFound(
+            MenuItemNotFoundException ex, HttpServletRequest request) {
+
+        return new ResponseEntity<>(
+                buildResponse(ex, HttpStatus.NOT_FOUND, request),
+                HttpStatus.NOT_FOUND
+        );
+    }
+
+    // ✅ OrderItem Not Found
+    @ExceptionHandler(OrderItemNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleOrderItemNotFound(
+            OrderItemNotFoundException ex, HttpServletRequest request) {
+
+        return new ResponseEntity<>(
+                buildResponse(ex, HttpStatus.NOT_FOUND, request),
+                HttpStatus.NOT_FOUND
+        );
+    }
+
+    
+    
+    //testing purposes DIPTYANIL
+    @ExceptionHandler(DuplicateCustomerException.class)
+    public String handleDuplicate(DuplicateCustomerException ex) {
+        return ex.getMessage();
+    }
+    
+    
     // ✅ Catch ALL (Fallback)
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> handleGlobalException(
@@ -133,3 +186,4 @@ public class GlobalExceptionHandler {
         );
     }
 }
+

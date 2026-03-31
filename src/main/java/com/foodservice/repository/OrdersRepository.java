@@ -75,8 +75,8 @@ public interface OrdersRepository extends JpaRepository<OrdersEntity, Integer> {
  Long countByCustomer_CustomerId(Integer customerId);
 
  // Most ordered restaurant for a customer
- @Query("SELECT o.restaurant.restaurantId, COUNT(o) as cnt FROM OrdersEntity o " +
-        "WHERE o.customer.customerId = :customerId " +
-        "GROUP BY o.restaurant.restaurantId ORDER BY cnt DESC LIMIT 1")
+ @Query(value = "SELECT o.restaurant_id, COUNT(o.order_id) as cnt FROM orders o " +
+        "WHERE o.customer_id = :customerId " +
+        "GROUP BY o.restaurant_id ORDER BY cnt DESC LIMIT 1", nativeQuery = true)
  Object[] findTopRestaurantByCustomer(@Param("customerId") Integer customerId);
 }

@@ -187,30 +187,23 @@ public class MenuItemsDAO {
         return list;
     }
 
-    // Items from restaurants with rating >= given value
+    // Items from restaurants that have at least one rating equal to the given value (empty list if none)
     public List<MenuItemsEntity> findItemsByRating(int rating) {
-        List<MenuItemsEntity> list =
-                menuItemsRepository.findItemsByRating(rating);
-
-        if (list == null || list.isEmpty()) {
-            throw new ResourceNotFoundException(
-                    "No items found with rating >= " + rating);
-        }
-
-        return list;
+        List<MenuItemsEntity> list = menuItemsRepository.findItemsByRating(rating);
+        return list != null ? list : List.of();
     }
 
-    // Items from a specific restaurant with rating >= given value
-    public List<MenuItemsEntity> findItemsByRestaurantAndRating(
+    // Items from a specific restaurant with the exact given rating
+    public List<Object[]> findItemsByRestaurantAndRating(
             Integer restaurantId, int minRating) {
 
-        List<MenuItemsEntity> list =
+        List<Object[]> list =
                 menuItemsRepository.findItemsByRestaurantAndRating(restaurantId, minRating);
 
         if (list == null || list.isEmpty()) {
             throw new ResourceNotFoundException(
                     "No items found for restaurant id: " + restaurantId
-                    + " with rating >= " + minRating);
+                    + " with rating = " + minRating);
         }
 
         return list;

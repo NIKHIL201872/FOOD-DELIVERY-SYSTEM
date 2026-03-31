@@ -55,11 +55,12 @@ public interface MenuItemsRepository extends JpaRepository<MenuItemsEntity, Inte
            "GROUP BY m.itemId ORDER BY SUM(oi.quantity) DESC")
     List<MenuItemsEntity> findTopSellingItems();
 
-    // Items with rating >= given value
+    // Menu items that belong to orders which received this exact rating value
     @Query("SELECT DISTINCT m FROM MenuItemsEntity m " +
-    	       "WHERE m.restaurant.restaurantId IN (" +
-    	       "SELECT r.restaurant.restaurantId FROM RatingEntity r WHERE r.rating >= :rating)")
-    	List<MenuItemsEntity> findItemsByRating(@Param("rating") int rating);
+           "JOIN OrderItemsEntity oi ON m.itemId = oi.item.itemId " +
+           "JOIN RatingEntity r ON oi.order.orderId = r.order.orderId " +
+           "WHERE r.rating = :ratingValue")
+    List<MenuItemsEntity> findItemsByRating(@Param("ratingValue") int ratingValue);
 
     // ---------------- DELETE ----------------
 
@@ -69,13 +70,13 @@ public interface MenuItemsRepository extends JpaRepository<MenuItemsEntity, Inte
     void deleteByRestaurantId(@Param("restaurantId") Integer restaurantId);
     
     
-    //----------FIND ITEMS BY RETAURANT ID AND RATING-------
-    @Query("SELECT DISTINCT m FROM MenuItemsEntity m " +
-    	       "WHERE m.restaurant.restaurantId = :restaurantId " +
-    	       "AND m.restaurant.restaurantId IN (" +
-    	       "SELECT r.restaurant.restaurantId FROM RatingEntity r " +
-    	       "WHERE r.rating >= :minRating)")
-    	List<MenuItemsEntity> findItemsByRestaurantAndRating(
+    //----------FIND ITEMS BY RESTAURANT ID AND RATING-------
+    @Query("SELECT DISTINCT m, r.rating FROM MenuItemsEntity m " +
+           "JOIN OrderItemsEntity oi ON m.itemId = oi.item.itemId " +
+           "JOIN RatingEntity r ON oi.order.orderId = r.order.orderId " +
+           "WHERE m.restaurant.restaurantId = :restaurantId " +
+           "AND r.rating = :minRating")
+    	List<Object[]> findItemsByRestaurantAndRating(
     	        @Param("restaurantId") Integer restaurantId,
     	        @Param("minRating") int minRating);
 }
