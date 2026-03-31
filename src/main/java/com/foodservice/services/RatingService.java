@@ -5,13 +5,19 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.foodservice.DAO.RatingDAO;
 import com.foodservice.DAO.RestaurantDAO;
 import com.foodservice.dto.Rating;
+import com.foodservice.dto.RatingOnlyDTO;
+import com.foodservice.dto.Restaurants;
 import com.foodservice.entity.RatingEntity;
 import com.foodservice.entity.RestaurantsEntity;
+import com.foodservice.entity.MenuItemsEntity;
 import com.foodservice.entity.OrdersEntity;
 import com.foodservice.exception.ResourceNotFoundException;
+import com.foodservice.repository.OrdersRepository;
+import com.foodservice.repository.RatingRepository;
 import com.foodservice.exception.BadRequestException;
 //import com.foodservice.repository.OrdersRepository;
 
@@ -24,32 +30,34 @@ public class RatingService {
     @Autowired
     private RestaurantDAO restaurantDAO;
 
-//    @Autowired
-//    private OrdersRepository ordersRepo;
-
+    @Autowired
+    private OrdersRepository ordersRepo;
+   
+    @Autowired
+    private RatingRepository ratingrepo;
     // ✅ CREATE
-//    public RatingEntity addRating(Rating dto) {
-//
-//        if (dto.getRating() < 1 || dto.getRating() > 5) {
-//            throw new BadRequestException("Rating must be between 1 and 5");
-//        }
-//
-//        RestaurantsEntity restaurant = restaurantDAO.findById(dto.getRestaurantId());
-//        if (restaurant == null) {
-//            throw new ResourceNotFoundException("Restaurant not found with ID: " + dto.getRestaurantId());
-//        }
-//
-//        OrdersEntity order = ordersRepo.findById(dto.getOrderId())
-//                .orElseThrow(() -> new ResourceNotFoundException("Order not found with ID: " + dto.getOrderId()));
-//
-//        RatingEntity rating = new RatingEntity();
-//        rating.setRating(dto.getRating());
-//        rating.setReview(dto.getReview());
-//        rating.setRestaurant(restaurant);
-//        rating.setOrder(order);
-//
-//        return ratingDAO.save(rating);
-//    }
+    public RatingEntity addRating(Rating dto) {
+
+        if (dto.getRating() < 1 || dto.getRating() > 5) {
+            throw new BadRequestException("Rating must be between 1 and 5");
+        }
+
+        RestaurantsEntity restaurant = restaurantDAO.findById(dto.getRestaurantId());
+        if (restaurant == null) {
+            throw new ResourceNotFoundException("Restaurant not found with ID: " + dto.getRestaurantId());
+        }
+
+        OrdersEntity order = ordersRepo.findById(dto.getOrderId())
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with ID: " + dto.getOrderId()));
+
+        RatingEntity rating = new RatingEntity();
+        rating.setRating(dto.getRating());
+        rating.setReview(dto.getReview());
+        rating.setRestaurant(restaurant);
+        rating.setOrder(order);
+
+        return ratingDAO.save(rating);
+    }
 
     // ✅ GET ALL
     public List<RatingEntity> getAll() {
@@ -68,13 +76,49 @@ public class RatingService {
     }
 
     // ✅ GET BY RESTAURANT
-    public List<RatingEntity> getByRestaurant(Integer restaurantId) {
+    public List<Rating> getByRestaurant(Integer restaurantId) {
+
+        List<RatingEntity> list =
+                ratingDAO.findByRestaurantId(restaurantId);
+
+        return list.stream().map(entity -> {
+
+            Rating dto = new Rating();
+
+            dto.setRatingId(entity.getRatingId());
+            dto.setRating(entity.getRating());
+            dto.setReview(entity.getReview());
+
+            // map restaurant WITHOUT menuItems
+            Restaurants resDto = new Restaurants();
+            resDto.setRestaurantId(entity.getRestaurant().getRestaurantId());
+            resDto.setRestaurantName(entity.getRestaurant().getRestaurantName());
+            resDto.setRestaurantAddress(entity.getRestaurant().getRestaurantAddress());
+            resDto.setRestaurantPhone(entity.getRestaurant().getRestaurantPhone());
+
+            dto.setRestaurants(resDto);
+
+            return dto;
+
+        }).toList();
+    }
+    // ✅ GET BY RESTAURANT with menu
+    public List<RatingEntity> getByRestaurantwithmenu(Integer restaurantId) {
         return ratingDAO.findByRestaurantId(restaurantId);
     }
-
     // ✅ GET BY ORDER
-    public List<RatingEntity> getByOrder(Integer orderId) {
-        return ratingDAO.findByOrderId(orderId);
+    public List<Rating> getByOrder(Integer orderId) {
+        List<RatingEntity> list = ratingrepo.findByOrder_OrderId(orderId);
+
+        return list.stream().map(entity -> {
+        	Rating dto = new Rating();
+            dto.setRatingId(entity.getRatingId());
+            dto.setRating(entity.getRating());
+            dto.setReview(entity.getReview());
+            dto.setRestaurantId(entity.getRestaurant().getRestaurantId());
+            dto.setOrderId(entity.getOrder().getOrderId()); // only ID
+            return dto;
+        }).toList();
     }
 
     // ✅ GET BY RATING VALUE
@@ -105,5 +149,41 @@ public class RatingService {
     public void delete(Integer id) {
         RatingEntity rating = getById(id);
         ratingDAO.delete(rating);
+    }
+    public List<RatingOnlyDTO> getAllFlat() {
+        List<RatingEntity> list = ratingrepo.findAll();
+
+        return list.stream().map(entity -> {
+        	RatingOnlyDTO dto = new RatingOnlyDTO();
+            dto.setRatingId(entity.getRatingId());
+            dto.setRating(entity.getRating());
+            dto.setReview(entity.getReview());
+
+            // extract only IDs
+            dto.setRestaurantId(entity.getRestaurant().getRestaurantId());
+            dto.setOrderId(entity.getOrder().getOrderId());
+
+            return dto;
+        }).toList();
+    }
+    public RatingOnlyDTO getFlatById(Integer id) {
+        RatingEntity entity = ratingrepo.findById(id)
+            .orElseThrow(() -> new RuntimeException("Rating not found"));
+
+        RatingOnlyDTO dto = new RatingOnlyDTO();
+        dto.setRatingId(entity.getRatingId());
+        dto.setRating(entity.getRating());
+        dto.setReview(entity.getReview());
+
+        // extract only IDs (no full objects)
+        dto.setRestaurantId(
+            entity.getRestaurant() != null ? entity.getRestaurant().getRestaurantId() : null
+        );
+
+        dto.setOrderId(
+            entity.getOrder() != null ? entity.getOrder().getOrderId() : null
+        );
+
+        return dto;
     }
 }

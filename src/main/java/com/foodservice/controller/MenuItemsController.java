@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.foodservice.dto.MenuItemWithRating;
 import com.foodservice.dto.MenuItems;
 import com.foodservice.dto.PagedResponse;
 import com.foodservice.services.MenuItemsService;
@@ -148,14 +149,14 @@ public class MenuItemsController {
 
     // 17.
     @GetMapping("/rating")
-    public ResponseEntity<List<MenuItems>> getItemsByRating(
+    public ResponseEntity<List<MenuItemWithRating>> getItemsByRating(
             @RequestParam("rating") int rating) {
         return ResponseEntity.ok(menuItemsService.getItemsByRating(rating));
     }
 
     // 18.
     @GetMapping("/restaurant/{restaurantId}/rating")
-    public ResponseEntity<List<MenuItems>> getItemsByRestaurantAndRating(
+    public ResponseEntity<List<MenuItemWithRating>> getItemsByRestaurantAndRating(
             @PathVariable("restaurantId") Integer restaurantId,
             @RequestParam("min") int minRating) {
         return ResponseEntity.ok(

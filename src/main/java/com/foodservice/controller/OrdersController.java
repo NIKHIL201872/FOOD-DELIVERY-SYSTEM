@@ -39,7 +39,7 @@ public class OrdersController {
     // 3. Get all orders (optionally filter by status)
     @GetMapping
     public ResponseEntity<List<Orders>> getAllOrders(
-            @RequestParam(required = false) String status) {
+            @RequestParam(value = "status", required = false) String status) {
         if (status != null) {
             return ResponseEntity.ok(ordersService.getOrdersByStatus(status));
         }
@@ -56,7 +56,7 @@ public class OrdersController {
     @GetMapping("/customer/{customerId}")
     public ResponseEntity<List<Orders>> getOrdersByCustomer(
             @PathVariable Integer customerId,
-            @RequestParam(value="status",required = false) String status) {
+            @RequestParam(required = false) String status) {
         if (status != null) {
             return ResponseEntity.ok(ordersService.getOrdersByCustomerAndStatus(customerId, status));
         }
@@ -177,7 +177,7 @@ public class OrdersController {
     // 20. Get all orders paged
     @GetMapping("/paged")
     public ResponseEntity<PagedResponse<Orders>> getAllOrdersPaged(
-            @RequestParam(defaultValue = "0")  int page,
+            @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         return ResponseEntity.ok(ordersService.getAllOrdersPaged(page, size));
     }

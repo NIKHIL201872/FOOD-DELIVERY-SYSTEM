@@ -3,6 +3,7 @@ package com.foodservice.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.foodservice.dto.Customers;
 import com.foodservice.entity.CustomersEntity;
+import com.foodservice.exception.NoCustomerException;
 import com.foodservice.services.CustomerService;
 
 @RestController
@@ -25,9 +27,9 @@ public class CustomerController {
 	private CustomerService customerService;
 	
 	@PostMapping("/register")   // chole geche 
-	public String createCustomer(@RequestBody Customers customers) {
+	public ResponseEntity<String> createCustomer(@RequestBody Customers customers) {
 		customerService.customerRegistration(customers);
-		return "Customer added";
+		return ResponseEntity.ok("Customer added successfully");
 	}
 	
 	
@@ -62,7 +64,31 @@ public class CustomerController {
         return customerService.getCustomerByPhone(phone);
     }
 
-    
+    @GetMapping("/by-name-email")
+    public List<Customers> getByNameAndEmail(
+            @RequestParam String name,
+            @RequestParam String email) throws NoCustomerException {
+
+        return customerService.getByNameAndEmail(name, email);
+    }
+
+    // 🔹 NAME + PHONE
+    @GetMapping("/by-name-phone")
+    public List<Customers> getByNameAndPhone(
+            @RequestParam String name,
+            @RequestParam String phone) throws NoCustomerException {
+
+        return customerService.getByNameAndPhone(name, phone);
+    }
+
+    // 🔹 EMAIL + PHONE
+    @GetMapping("/by-email-phone")
+    public Customers getByEmailAndPhone(
+            @RequestParam String email,
+            @RequestParam String phone) throws NoCustomerException {
+
+        return customerService.getByEmailAndPhone(email, phone);
+    }
 	@PutMapping("/{id}")   // chole geche
 	public String updateCustomer(@PathVariable("id") int id, @RequestBody Customers customers) {
 		customerService.updateCustomer(id, customers);

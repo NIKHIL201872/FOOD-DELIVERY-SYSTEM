@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.foodservice.dto.DeliveryAddresses;
 import com.foodservice.entity.DeliveryAddressesEntity;
+import com.foodservice.exception.NoAddressException;
 import com.foodservice.services.AddressService;
 
 @RestController
@@ -52,6 +53,34 @@ public class AddressController {
     @GetMapping("/by-postal")
     public List<DeliveryAddresses> getByPostalCode(@RequestParam("postalCode") String postalCode) {
         return addressService.getByPostalCode(postalCode);
+    }
+    
+    
+ // 🔹 CITY + STATE
+    @GetMapping("/by-city-state")
+    public List<DeliveryAddresses> getByCityAndState(
+            @RequestParam String city,
+            @RequestParam String state) throws NoAddressException {
+
+        return addressService.getByCityAndState(city, state);
+    }
+
+    // 🔹 CITY + POSTAL
+    @GetMapping("/by-city-postal")
+    public List<DeliveryAddresses> getByCityAndPostal(
+            @RequestParam String city,
+            @RequestParam String postalCode) throws NoAddressException {
+
+        return addressService.getByCityAndPostal(city, postalCode);
+    }
+
+    // 🔹 STATE + POSTAL
+    @GetMapping("/by-state-postal")
+    public List<DeliveryAddresses> getByStateAndPostal(
+            @RequestParam String state,
+            @RequestParam String postalCode) throws NoAddressException {
+
+        return addressService.getByStateAndPostal(state, postalCode);
     }
     
 	@GetMapping("/customer/{id}")   // chole geche

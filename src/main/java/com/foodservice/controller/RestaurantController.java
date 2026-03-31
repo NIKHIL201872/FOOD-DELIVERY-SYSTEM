@@ -3,9 +3,12 @@ package com.foodservice.controller;
 import java.util.List;
 import org.springframework.web.bind.annotation.*;
 
+import com.foodservice.dto.MenuItems;
 import com.foodservice.dto.Restaurants;
+import com.foodservice.entity.MenuItemsEntity;
 import com.foodservice.entity.RatingEntity;
 import com.foodservice.entity.RestaurantsEntity;
+import com.foodservice.services.MenuItemsService;
 import com.foodservice.services.RatingService;
 import com.foodservice.services.RestaurantService;
 
@@ -18,6 +21,7 @@ public class RestaurantController {
 
     private final RestaurantService service;
     private final RatingService ratingService;
+    private final MenuItemsService menuItemsService;
 
 
     @PostMapping
@@ -64,6 +68,10 @@ public class RestaurantController {
 
     @GetMapping("/{id}/ratings")
     public List<RatingEntity> getRatings(@PathVariable("id") Integer id) {
-        return ratingService.getByRestaurant(id);
+        return ratingService.getByRestaurantwithmenu(id);
+    }
+    @GetMapping("/{id}/menuitems")
+    public List<MenuItems> getMenuItemsByRestaurantId(@PathVariable("id") Integer id) {
+        return menuItemsService.getByRestaurantId(id);
     }
 }

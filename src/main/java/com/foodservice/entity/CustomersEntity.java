@@ -26,7 +26,7 @@ public class CustomersEntity {
     private String customerPhone;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-   // @JsonManagedReference
+//    @JsonManagedReference
     @JsonIgnore
     private List<DeliveryAddressesEntity> addresses;
 

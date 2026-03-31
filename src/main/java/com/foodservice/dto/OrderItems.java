@@ -21,5 +21,5 @@ public class OrderItems {
     private BigDecimal itemPrice;
     private BigDecimal subtotal;
     private String itemDescription;
-    private int restaurantid;
+    private Integer restaurantid;
 }

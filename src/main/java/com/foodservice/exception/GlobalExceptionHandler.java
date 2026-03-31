@@ -111,10 +111,54 @@ public class GlobalExceptionHandler {
         );
     }
 
+    // ✅ MenuItem Conflict
+    @ExceptionHandler(MenuItemConflictException.class)
+    public ResponseEntity<ApiErrorResponse> handleMenuItemConflict(
+            MenuItemConflictException ex, HttpServletRequest request) {
+
+        return new ResponseEntity<>(
+                buildResponse(ex, HttpStatus.CONFLICT, request),
+                HttpStatus.CONFLICT
+        );
+    }
+
+    // ✅ OrderItem Conflict
+    @ExceptionHandler(OrderItemConflictException.class)
+    public ResponseEntity<ApiErrorResponse> handleOrderItemConflict(
+            OrderItemConflictException ex, HttpServletRequest request) {
+
+        return new ResponseEntity<>(
+                buildResponse(ex, HttpStatus.CONFLICT, request),
+                HttpStatus.CONFLICT
+        );
+    }
+
     // ✅ Resource Not Found
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleNotFound(
             ResourceNotFoundException ex, HttpServletRequest request) {
+
+        return new ResponseEntity<>(
+                buildResponse(ex, HttpStatus.NOT_FOUND, request),
+                HttpStatus.NOT_FOUND
+        );
+    }
+
+    // ✅ MenuItem Not Found
+    @ExceptionHandler(MenuItemNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleMenuItemNotFound(
+            MenuItemNotFoundException ex, HttpServletRequest request) {
+
+        return new ResponseEntity<>(
+                buildResponse(ex, HttpStatus.NOT_FOUND, request),
+                HttpStatus.NOT_FOUND
+        );
+    }
+
+    // ✅ OrderItem Not Found
+    @ExceptionHandler(OrderItemNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleOrderItemNotFound(
+            OrderItemNotFoundException ex, HttpServletRequest request) {
 
         return new ResponseEntity<>(
                 buildResponse(ex, HttpStatus.NOT_FOUND, request),

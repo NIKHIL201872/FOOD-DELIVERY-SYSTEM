@@ -9,12 +9,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.foodservice.DAO.MenuItemsDAO;
+import com.foodservice.dto.MenuItemWithRating;
 import com.foodservice.dto.MenuItems;
 import com.foodservice.dto.PagedResponse;
 import com.foodservice.entity.MenuItemsEntity;
 import com.foodservice.entity.RestaurantsEntity;
-import com.foodservice.exception.BadRequestException;
-import com.foodservice.exception.ResourceConflictException;
+import com.foodservice.exception.MenuItemConflictException;
+import com.foodservice.exception.MenuItemNotFoundException;
 
 import jakarta.transaction.Transactional;
 
@@ -31,6 +32,9 @@ public class MenuItemsService {
 
     private MenuItems convertToDTO(MenuItemsEntity entity) {
         MenuItems dto = mapper.map(entity, MenuItems.class);
+        if (entity.getRestaurant() == null || entity.getRestaurant().getRestaurantId() == null) {
+            throw new MenuItemNotFoundException("Restaurant not found for menu item id: " + entity.getItemId());
+        }
         dto.setRestaurantId(entity.getRestaurant().getRestaurantId());
         return dto;
     }
@@ -48,13 +52,13 @@ public class MenuItemsService {
     @Transactional
     public String saveItem(MenuItems dto) {
         if (dto == null) {
-            throw new BadRequestException("Item cannot be null");
+            throw new MenuItemNotFoundException("Item payload not found");
         }
         if (dto.getItemId() == null) {
-            throw new BadRequestException("Item ID must be provided");
+            throw new MenuItemNotFoundException("Item ID not found in request");
         }
         if (menuItemsDAO.existsById(dto.getItemId())) {
-            throw new ResourceConflictException("Item ID already exists");
+            throw new MenuItemConflictException("Item ID already exists");
         }
         menuItemsDAO.save(convertToEntity(dto));
         return "Menu item inserted successfully with ID: " + dto.getItemId();
@@ -71,7 +75,7 @@ public class MenuItemsService {
 
     public MenuItems getItemById(Integer id) {
         if (id == null || id <= 0) {
-            throw new BadRequestException("Invalid item id");
+            throw new MenuItemNotFoundException("Item id not found");
         }
         return convertToDTO(menuItemsDAO.findById(id));
     }
@@ -81,10 +85,10 @@ public class MenuItemsService {
     @Transactional
     public String updateItem(Integer id, MenuItems dto) {
         if (id == null || id <= 0) {
-            throw new BadRequestException("Invalid item id");
+            throw new MenuItemNotFoundException("Item id not found");
         }
         if (dto == null) {
-            throw new BadRequestException("Item data cannot be null");
+            throw new MenuItemNotFoundException("Item payload not found");
         }
 
         MenuItemsEntity existing = menuItemsDAO.findById(id);
@@ -105,10 +109,10 @@ public class MenuItemsService {
     @Transactional
     public String updatePrice(Integer id, Double price) {
         if (id == null || id <= 0) {
-            throw new BadRequestException("Invalid item id");
+            throw new MenuItemNotFoundException("Item id not found");
         }
         if (price == null || price < 0) {
-            throw new BadRequestException("Price must be a non-negative value");
+            throw new MenuItemNotFoundException("Price parameter not found or invalid");
         }
 
         MenuItemsEntity existing = menuItemsDAO.findById(id);
@@ -121,7 +125,7 @@ public class MenuItemsService {
 
     public String deleteItem(Integer id) {
         if (id == null || id <= 0) {
-            throw new BadRequestException("Invalid item id");
+            throw new MenuItemNotFoundException("Item id not found");
         }
         menuItemsDAO.deleteById(id);
         return "Menu item deleted successfully for ID: " + id;
@@ -129,7 +133,7 @@ public class MenuItemsService {
 
     public String deleteByRestaurant(Integer restaurantId) {
         if (restaurantId == null || restaurantId <= 0) {
-            throw new BadRequestException("Invalid restaurant id");
+            throw new MenuItemNotFoundException("Restaurant id not found");
         }
         menuItemsDAO.deleteByRestaurant(restaurantId);
         return "All menu items deleted successfully for Restaurant ID: " + restaurantId;
@@ -139,7 +143,7 @@ public class MenuItemsService {
 
     public List<MenuItems> getByRestaurantId(Integer restaurantId) {
         if (restaurantId == null || restaurantId <= 0) {
-            throw new BadRequestException("Invalid restaurant id");
+            throw new MenuItemNotFoundException("Restaurant id not found");
         }
         return menuItemsDAO.findByRestaurantId(restaurantId)
                 .stream()
@@ -149,7 +153,7 @@ public class MenuItemsService {
 
     public List<MenuItems> getItemsByOrderId(Integer orderId) {
         if (orderId == null || orderId <= 0) {
-            throw new BadRequestException("Invalid order id");
+            throw new MenuItemNotFoundException("Order id not found");
         }
         return menuItemsDAO.findItemsByOrderId(orderId)
                 .stream()
@@ -161,7 +165,7 @@ public class MenuItemsService {
 
     public List<MenuItems> getByName(String name) {
         if (name == null || name.trim().isEmpty()) {
-            throw new BadRequestException("Name cannot be empty");
+            throw new MenuItemNotFoundException("Name parameter not found");
         }
         return menuItemsDAO.findByName(name)
                 .stream()
@@ -171,7 +175,7 @@ public class MenuItemsService {
 
     public List<MenuItems> getByPriceRange(Double min, Double max) {
         if (min == null || max == null || min < 0 || max < 0 || min > max) {
-            throw new BadRequestException("Invalid price range");
+            throw new MenuItemNotFoundException("Price range parameters not found or invalid");
         }
         return menuItemsDAO.findByPriceRange(min, max)
                 .stream()
@@ -181,10 +185,10 @@ public class MenuItemsService {
 
     public List<MenuItems> getByRestaurantAndPrice(Integer restaurantId, Double min, Double max) {
         if (restaurantId == null || restaurantId <= 0) {
-            throw new BadRequestException("Invalid restaurant id");
+            throw new MenuItemNotFoundException("Restaurant id not found");
         }
         if (min == null || max == null || min < 0 || max < 0 || min > max) {
-            throw new BadRequestException("Invalid price range");
+            throw new MenuItemNotFoundException("Price range parameters not found or invalid");
         }
         return menuItemsDAO.findByRestaurantAndPrice(restaurantId, min, max)
                 .stream()
@@ -197,7 +201,7 @@ public class MenuItemsService {
     @Transactional
     public String saveAll(List<MenuItems> items) {
         if (items == null || items.isEmpty()) {
-            throw new BadRequestException("Item list cannot be empty");
+            throw new MenuItemNotFoundException("Item list payload not found");
         }
         List<MenuItemsEntity> entities = items.stream()
                 .map(this::convertToEntity)
@@ -210,10 +214,10 @@ public class MenuItemsService {
 
     public List<MenuItems> sortItems(String field, String direction) {
         if (field == null || field.isEmpty()) {
-            throw new BadRequestException("Sort field cannot be empty");
+            throw new MenuItemNotFoundException("Sort field parameter not found");
         }
         if (!direction.equalsIgnoreCase("asc") && !direction.equalsIgnoreCase("desc")) {
-            throw new BadRequestException("Direction must be 'asc' or 'desc'");
+            throw new MenuItemNotFoundException("Sort direction parameter not found or invalid");
         }
         return menuItemsDAO.sortItems(field, direction)
                 .stream()
@@ -225,7 +229,7 @@ public class MenuItemsService {
 
     public PagedResponse<MenuItems> getPagedItems(int page, int size) {
         if (page < 0 || size <= 0) {
-            throw new BadRequestException("Invalid page or size");
+            throw new MenuItemNotFoundException("Page or size parameters not found or invalid");
         }
         Page<MenuItemsEntity> result = menuItemsDAO.getPagedItems(page, size);
         List<MenuItems> items = result.getContent()
@@ -245,7 +249,7 @@ public class MenuItemsService {
 
     public List<MenuItems> getItemsByCustomer(Integer customerId) {
         if (customerId == null || customerId <= 0) {
-            throw new BadRequestException("Invalid customer id");
+            throw new MenuItemNotFoundException("Customer id not found");
         }
         return menuItemsDAO.findItemsByCustomer(customerId)
                 .stream()
@@ -255,7 +259,7 @@ public class MenuItemsService {
 
     public List<MenuItems> getItemsByOrderDate(String date) {
         if (date == null || date.isEmpty()) {
-            throw new BadRequestException("Date cannot be empty");
+            throw new MenuItemNotFoundException("Date parameter not found");
         }
         return menuItemsDAO.findItemsByOrderDate(date)
                 .stream()
@@ -270,26 +274,41 @@ public class MenuItemsService {
                 .toList();
     }
 
-    public List<MenuItems> getItemsByRating(int rating) {
+    public List<MenuItemWithRating> getItemsByRating(int rating) {
         if (rating < 0 || rating > 5) {
-            throw new BadRequestException("Rating must be between 0 and 5");
+            throw new MenuItemNotFoundException("Rating parameter not found or invalid");
         }
         return menuItemsDAO.findItemsByRating(rating)
                 .stream()
-                .map(this::convertToDTO)
+                .map(entity -> toMenuItemWithRating(entity, rating))
                 .toList();
     }
 
-    public List<MenuItems> getItemsByRestaurantAndRating(Integer restaurantId, int minRating) {
+    private MenuItemWithRating toMenuItemWithRating(MenuItemsEntity entity, int matchedRating) {
+        MenuItems base = convertToDTO(entity);
+        return new MenuItemWithRating(
+                base.getItemId(),
+                base.getItemName(),
+                base.getItemDescription(),
+                base.getItemPrice(),
+                base.getRestaurantId(),
+                matchedRating);
+    }
+
+    public List<MenuItemWithRating> getItemsByRestaurantAndRating(Integer restaurantId, int minRating) {
         if (restaurantId == null || restaurantId <= 0) {
-            throw new BadRequestException("Invalid restaurant id");
+            throw new MenuItemNotFoundException("Restaurant id not found");
         }
         if (minRating < 0 || minRating > 5) {
-            throw new BadRequestException("Rating must be between 0 and 5");
+            throw new MenuItemNotFoundException("Rating parameter not found or invalid");
         }
         return menuItemsDAO.findItemsByRestaurantAndRating(restaurantId, minRating)
                 .stream()
-                .map(this::convertToDTO)
+                .map(row -> {
+                    MenuItemsEntity entity = (MenuItemsEntity) row[0];
+                    int actualRating = ((Number) row[1]).intValue();
+                    return toMenuItemWithRating(entity, actualRating);
+                })
                 .toList();
     }
 }

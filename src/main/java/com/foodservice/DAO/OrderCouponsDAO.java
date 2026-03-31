@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import com.foodservice.entity.*;
 import com.foodservice.repository.OrderCouponsRepository;
-//import com.foodservice.repository.OrdersRepository;
+import com.foodservice.repository.OrdersRepository;
 
 @Repository
 public class OrderCouponsDAO {
@@ -15,10 +15,10 @@ public class OrderCouponsDAO {
     @Autowired
     private OrderCouponsRepository repo;
 
-    /*
-     * @Autowired
-     * private OrdersRepository orderRepo;
-     */
+    
+     @Autowired
+     private OrdersRepository orderRepo;
+     
     public OrderCouponsEntity save(OrderCouponsEntity oc) {
         return repo.save(oc);
     }
@@ -43,9 +43,9 @@ public class OrderCouponsDAO {
         repo.deleteByCoupon_CouponId(couponId);
     }
 
-    /*
-     * public OrdersEntity findOrderById(Integer orderId) {
-     * return orderRepo.findById(orderId).orElse(null);
-     * }
-     */
+    
+     public OrdersEntity findOrderById(Integer orderId) {
+     return orderRepo.findById(orderId).orElse(null);
+     }
+     
 }

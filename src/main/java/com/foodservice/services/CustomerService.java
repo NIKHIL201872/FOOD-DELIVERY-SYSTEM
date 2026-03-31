@@ -157,7 +157,45 @@ public class CustomerService {
 		// ❌ No param passed
 		throw new NoCustomerException("Pass at least one param: name / email / phone");
 	}
+	
+	public List<Customers> getByNameAndEmail(String name, String email) throws NoCustomerException {
 
+        List<CustomersEntity> list = customerDAO.getByNameAndEmail(name, email);
+
+        if (list == null || list.isEmpty()) {
+            throw new NoCustomerException("No customer found with name & email");
+        }
+
+        return list.stream()
+                .map(e -> mapper.map(e, Customers.class))
+                .collect(Collectors.toList());
+    }
+
+    // 🔹 NAME + PHONE
+    public List<Customers> getByNameAndPhone(String name, String phone) throws NoCustomerException {
+
+        List<CustomersEntity> list = customerDAO.getByNameAndPhone(name, phone);
+
+        if (list == null || list.isEmpty()) {
+            throw new NoCustomerException("No customer found with name & phone");
+        }
+
+        return list.stream()
+                .map(e -> mapper.map(e, Customers.class))
+                .collect(Collectors.toList());
+    }
+
+    // 🔹 EMAIL + PHONE
+    public Customers getByEmailAndPhone(String email, String phone) throws NoCustomerException {
+
+        CustomersEntity entity = customerDAO.getByEmailAndPhone(email, phone);
+
+        if (entity == null) {
+            throw new NoCustomerException("No customer found with email & phone");
+        }
+
+        return mapper.map(entity, Customers.class);
+    }
 	public void updateCustomer(int id, Customers customers) {
 		CustomersEntity existingCustomer = customerDAO.getCustomerById(id);
 
