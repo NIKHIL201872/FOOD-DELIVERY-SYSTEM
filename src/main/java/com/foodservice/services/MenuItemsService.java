@@ -311,4 +311,17 @@ public class MenuItemsService {
                 })
                 .toList();
     }
+
+    public List<MenuItems> getItemsByRestaurantAndRating(Integer restaurantId, int minRating) {
+        if (restaurantId == null || restaurantId <= 0) {
+            throw new BadRequestException("Invalid restaurant id");
+        }
+        if (minRating < 0 || minRating > 5) {
+            throw new BadRequestException("Rating must be between 0 and 5");
+        }
+        return menuItemsDAO.findItemsByRestaurantAndRating(restaurantId, minRating)
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
 }
