@@ -18,6 +18,11 @@ public interface CustomersRepository extends JpaRepository<CustomersEntity, Inte
 
     CustomersEntity findByCustomerPhone(String customerPhone);
     
+    @Query("SELECT c FROM CustomersEntity c WHERE c.customerEmail = :email OR c.customerPhone = :phone")
+    List<CustomersEntity> checkDuplicate(@Param("email") String email,
+                                         @Param("phone") String phone);
+    
+    
     @Query("SELECT c FROM CustomersEntity c WHERE c.customerName = :name AND c.customerEmail = :email")
     List<CustomersEntity> findByNameAndEmail(@Param("name") String name,
                                              @Param("email") String email);
