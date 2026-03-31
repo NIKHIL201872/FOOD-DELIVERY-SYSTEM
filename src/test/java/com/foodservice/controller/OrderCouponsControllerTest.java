@@ -1,4 +1,4 @@
-package controller;
+package com.foodservice.controller;
 
 import com.foodservice.services.OrderCouponsService;
 import com.foodservice.controller.OrderCouponsController;

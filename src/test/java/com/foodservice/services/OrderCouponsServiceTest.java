@@ -1,4 +1,4 @@
-package service;
+package com.foodservice.services;
 
 import com.foodservice.DAO.CouponsDAO;
 import com.foodservice.DAO.OrderCouponsDAO;

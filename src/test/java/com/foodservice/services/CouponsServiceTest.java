@@ -1,4 +1,4 @@
-package service;
+package com.foodservice.services;
 
 import com.foodservice.dto.Coupons;
 import com.foodservice.entity.CouponsEntity;
