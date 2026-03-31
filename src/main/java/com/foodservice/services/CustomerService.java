@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.foodservice.DAO.CustomerDAO;
 import com.foodservice.dto.Customers;
 import com.foodservice.entity.CustomersEntity;
+import com.foodservice.exception.DuplicateCustomerException;
 import com.foodservice.exception.NoCustomerException;
 
 @Service
@@ -24,17 +25,49 @@ public class CustomerService {
 	ModelMapper mapper;
 
 	public Customers customerRegistration(Customers customers) {
-		Integer maxId = customerDAO.findMaxCustomerId();
-		Integer newId = (maxId == null ? 1 : maxId + 1);
+//		Integer maxId = customerDAO.findMaxCustomerId();
+//		Integer newId = (maxId == null ? 1 : maxId + 1);
+//
+//		CustomersEntity customersEntity = new CustomersEntity();
+//		customersEntity.setCustomerId(newId);
+//		customersEntity.setCustomerName(customers.getCustomerName());
+//		customersEntity.setCustomerEmail(customers.getCustomerEmail());
+//		customersEntity.setCustomerPhone(customers.getCustomerPhone());
+//		CustomersEntity saved = customerDAO.insertCustomerDetails(customersEntity);
+//
+//		return mapper.map(saved, Customers.class);
+		
+		// 🔴 DUPLICATE CHECK
+	    List<CustomersEntity> duplicates = customerDAO.checkDuplicate(
+	            customers.getCustomerEmail(),
+	            customers.getCustomerPhone()
+	    );
 
-		CustomersEntity customersEntity = new CustomersEntity();
-		customersEntity.setCustomerId(newId);
-		customersEntity.setCustomerName(customers.getCustomerName());
-		customersEntity.setCustomerEmail(customers.getCustomerEmail());
-		customersEntity.setCustomerPhone(customers.getCustomerPhone());
-		CustomersEntity saved = customerDAO.insertCustomerDetails(customersEntity);
+	    if (duplicates != null && !duplicates.isEmpty()) {
 
-		return mapper.map(saved, Customers.class);
+	        for (CustomersEntity c : duplicates) {
+	            if (c.getCustomerEmail().equals(customers.getCustomerEmail())) {
+	                throw new DuplicateCustomerException("Email already exists");
+	            }
+	            if (c.getCustomerPhone().equals(customers.getCustomerPhone())) {
+	                throw new DuplicateCustomerException("Phone already exists");
+	            }
+	        }
+	    }
+
+	    // ✅ EXISTING LOGIC (UNCHANGED)
+	    Integer maxId = customerDAO.findMaxCustomerId();
+	    Integer newId = (maxId == null ? 1 : maxId + 1);
+
+	    CustomersEntity customersEntity = new CustomersEntity();
+	    customersEntity.setCustomerId(newId);
+	    customersEntity.setCustomerName(customers.getCustomerName());
+	    customersEntity.setCustomerEmail(customers.getCustomerEmail());
+	    customersEntity.setCustomerPhone(customers.getCustomerPhone());
+
+	    CustomersEntity saved = customerDAO.insertCustomerDetails(customersEntity);
+
+	    return mapper.map(saved, Customers.class);
 	}
 
 	public List<Customers> getAllCustomers() {

@@ -121,7 +121,15 @@ public class GlobalExceptionHandler {
                 HttpStatus.NOT_FOUND
         );
     }
-
+    
+    
+    //testing purposes DIPTYANIL
+    @ExceptionHandler(DuplicateCustomerException.class)
+    public String handleDuplicate(DuplicateCustomerException ex) {
+        return ex.getMessage();
+    }
+    
+    
     // ✅ Catch ALL (Fallback)
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> handleGlobalException(

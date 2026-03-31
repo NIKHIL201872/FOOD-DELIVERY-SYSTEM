@@ -66,4 +66,8 @@ public class CustomerDAO {
     public CustomersEntity getByEmailAndPhone(String email, String phone) {
         return customersRepository.findByEmailAndPhone(email, phone);
     }
+    
+    public List<CustomersEntity> checkDuplicate(String email, String phone) {
+        return customersRepository.checkDuplicate(email, phone);
+    }
 }

@@ -16,28 +16,28 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class OrdersEntity {
 
     @Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    // @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer orderId;
 
+    @Column(name = "order_date")
     private LocalDateTime orderDate;
 
+    @Column(name = "order_status")
     private String orderStatus;
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
-    //@JsonBackReference
     @JsonIgnore
     private CustomersEntity customer;
 
     @ManyToOne
     @JoinColumn(name = "restaurant_id")
-    //@JsonBackReference
     @JsonIgnore
     private RestaurantsEntity restaurant;
 
     @ManyToOne
     @JoinColumn(name = "delivery_driver_id")
-    @JsonBackReference
+    @JsonIgnore
     private DeliveryDriversEntity deliveryDriver;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
