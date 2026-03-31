@@ -30,12 +30,37 @@ public class OrderItemsDAO {
         repository.deleteById(id);
     }
 
-    // ✅ FIXED
+    //  FIXED
     public List<OrderItemsEntity> findByOrderId(Integer orderId) {
         return repository.findByOrder_OrderId(orderId);
     }
 
     public Integer getMaxId() {
         return repository.findMaxId();
+    }
+    //---NEW ---
+ // GET BY ITEM ID
+    public List<OrderItemsEntity> findByItemId(Integer itemId) {
+        return repository.findByItem_ItemId(itemId); // already exists in repo!
+    }
+
+    // GET BY ORDER ID + ITEM ID
+    public List<OrderItemsEntity> findByOrderIdAndItemId(Integer orderId, Integer itemId) {
+        return repository.findByOrder_OrderIdAndItem_ItemId(orderId, itemId);
+    }
+
+    // GET MOST ORDERED ITEMS
+    public List<Object[]> findMostOrderedItems() {
+        return repository.findMostOrderedItems();
+    }
+
+    // SAVE ALL (BULK)
+    public List<OrderItemsEntity> saveAll(List<OrderItemsEntity> entities) {
+        return repository.saveAll(entities);
+    }
+
+    // DELETE ALL BY ORDER ID
+    public void deleteAllByOrderId(Integer orderId) {
+        repository.deleteAllByOrder_OrderId(orderId);
     }
 }
