@@ -166,6 +166,15 @@ public class GlobalExceptionHandler {
         );
     }
 
+    
+    
+    //testing purposes DIPTYANIL
+    @ExceptionHandler(DuplicateCustomerException.class)
+    public String handleDuplicate(DuplicateCustomerException ex) {
+        return ex.getMessage();
+    }
+    
+    
     // ✅ Catch ALL (Fallback)
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> handleGlobalException(

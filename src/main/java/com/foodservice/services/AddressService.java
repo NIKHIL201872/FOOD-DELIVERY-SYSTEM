@@ -173,14 +173,4 @@ public class AddressService {
             throw new NoAddressException("Address not found with id: " + id);
         }
     }
-	
-//	public void deleteAddress(int id) {
-//		DeliveryAddressesEntity address = addressDAO.getAddressById(id);
-//		if(address != null) {
-//			addressDAO.deleteAddress(id);
-//		} else {
-//			 throw new RuntimeException("bokachoda");
-//			//throw new NoCustomerException("Address not found with id: "+id);
-//		}
-//	}
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
@@ -22,6 +23,7 @@ public class DeliveryDriversEntity {
     private String driverVehicle;
 
     @OneToMany(mappedBy = "deliveryDriver")
-    @JsonManagedReference 
+    //@JsonManagedReference 
+    @JsonIgnore
     private List<OrdersEntity> orders;
 }
