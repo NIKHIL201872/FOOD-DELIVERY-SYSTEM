@@ -48,7 +48,7 @@ public class AddressService {
 	    addressDAO.saveAddress(address);
 	}
 	
-	// 🔹 BY ID
+	//  BY ID
     public DeliveryAddresses getById(int id) {
         DeliveryAddressesEntity entity = addressDAO.getById(id);
 
@@ -59,7 +59,7 @@ public class AddressService {
         return mapper.map(entity, DeliveryAddresses.class);
     }
 
-    // 🔹 BY CITY
+    //  BY CITY
     public List<DeliveryAddresses> getByCity(String city) {
         List<DeliveryAddressesEntity> list = addressDAO.getByCity(city);
 
@@ -72,7 +72,7 @@ public class AddressService {
                 .collect(Collectors.toList());
     }
 
-    // 🔹 BY STATE
+    //  BY STATE
     public List<DeliveryAddresses> getByState(String state) {
         List<DeliveryAddressesEntity> list = addressDAO.getByState(state);
 
@@ -85,7 +85,7 @@ public class AddressService {
                 .collect(Collectors.toList());
     }
 
-    // 🔹 BY POSTAL CODE
+    //  BY POSTAL CODE
     public List<DeliveryAddresses> getByPostalCode(String postalCode) {
         List<DeliveryAddressesEntity> list = addressDAO.getByPostalCode(postalCode);
 
@@ -98,7 +98,7 @@ public class AddressService {
                 .collect(Collectors.toList());
     }
     
- // 🔹 CITY + STATE
+ //  CITY + STATE
     public List<DeliveryAddresses> getByCityAndState(String city, String state) throws NoAddressException {
 
         List<DeliveryAddressesEntity> list = addressDAO.getByCityAndState(city, state);
@@ -112,7 +112,7 @@ public class AddressService {
                 .collect(Collectors.toList());
     }
 
-    // 🔹 CITY + POSTAL
+    //  CITY + POSTAL
     public List<DeliveryAddresses> getByCityAndPostal(String city, String postalCode) throws NoAddressException {
 
         List<DeliveryAddressesEntity> list = addressDAO.getByCityAndPostal(city, postalCode);
@@ -126,7 +126,7 @@ public class AddressService {
                 .collect(Collectors.toList());
     }
 
-    // 🔹 STATE + POSTAL
+    //  STATE + POSTAL
     public List<DeliveryAddresses> getByStateAndPostal(String state, String postalCode) throws NoAddressException {
 
         List<DeliveryAddressesEntity> list = addressDAO.getByStateAndPostal(state, postalCode);

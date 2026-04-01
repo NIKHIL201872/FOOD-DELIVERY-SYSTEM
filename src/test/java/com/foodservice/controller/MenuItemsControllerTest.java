@@ -45,17 +45,7 @@ class MenuItemsControllerTest {
         verify(menuItemsService).saveItem(sampleItem);
     }
 
-    @Test
-    void saveAll_returnsCreated() {
-        List<MenuItems> items = List.of(sampleItem);
-        when(menuItemsService.saveAll(items)).thenReturn("1 menu item(s) inserted successfully");
-
-        ResponseEntity<String> response = menuItemsController.saveAll(items);
-
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals("1 menu item(s) inserted successfully", response.getBody());
-        verify(menuItemsService).saveAll(items);
-    }
+    
 
     @Test
     void getAllItems_returnsOk() {
@@ -90,16 +80,7 @@ class MenuItemsControllerTest {
         verify(menuItemsService).updateItem(1, sampleItem);
     }
 
-    @Test
-    void updatePrice_returnsOk() {
-        when(menuItemsService.updatePrice(1, 250.0)).thenReturn("Menu item price updated");
-
-        ResponseEntity<String> response = menuItemsController.updatePrice(1, 250.0);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Menu item price updated", response.getBody());
-        verify(menuItemsService).updatePrice(1, 250.0);
-    }
+    
 
     @Test
     void deleteItem_returnsOk() {
@@ -112,16 +93,7 @@ class MenuItemsControllerTest {
         verify(menuItemsService).deleteItem(1);
     }
 
-    @Test
-    void deleteByRestaurant_returnsOk() {
-        when(menuItemsService.deleteByRestaurant(10)).thenReturn("Deleted by restaurant");
-
-        ResponseEntity<String> response = menuItemsController.deleteByRestaurant(10);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Deleted by restaurant", response.getBody());
-        verify(menuItemsService).deleteByRestaurant(10);
-    }
+    
 
     @Test
     void getByRestaurant_returnsOk() {
@@ -134,16 +106,7 @@ class MenuItemsControllerTest {
         verify(menuItemsService).getByRestaurantId(10);
     }
 
-    @Test
-    void getByOrder_returnsOk() {
-        when(menuItemsService.getItemsByOrderId(1001)).thenReturn(List.of(sampleItem));
-
-        ResponseEntity<List<MenuItems>> response = menuItemsController.getByOrder(1001);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1, response.getBody().size());
-        verify(menuItemsService).getItemsByOrderId(1001);
-    }
+    
 
     @Test
     void getByName_returnsOk() {
@@ -179,27 +142,9 @@ class MenuItemsControllerTest {
         verify(menuItemsService).getByRestaurantAndPrice(10, 100.0, 300.0);
     }
 
-    @Test
-    void getItemsByCustomer_returnsOk() {
-        when(menuItemsService.getItemsByCustomer(22)).thenReturn(List.of(sampleItem));
+    
 
-        ResponseEntity<List<MenuItems>> response = menuItemsController.getItemsByCustomer(22);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1, response.getBody().size());
-        verify(menuItemsService).getItemsByCustomer(22);
-    }
-
-    @Test
-    void getItemsByOrderDate_returnsOk() {
-        when(menuItemsService.getItemsByOrderDate("2026-03-30")).thenReturn(List.of(sampleItem));
-
-        ResponseEntity<List<MenuItems>> response = menuItemsController.getItemsByOrderDate("2026-03-30");
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1, response.getBody().size());
-        verify(menuItemsService).getItemsByOrderDate("2026-03-30");
-    }
+    
 
     @Test
     void getTopSellingItems_returnsOk() {

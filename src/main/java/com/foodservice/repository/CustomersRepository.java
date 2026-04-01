@@ -27,12 +27,12 @@ public interface CustomersRepository extends JpaRepository<CustomersEntity, Inte
     List<CustomersEntity> findByNameAndEmail(@Param("name") String name,
                                              @Param("email") String email);
 
-    // 🔹 NAME + PHONE
+    //  NAME + PHONE
     @Query("SELECT c FROM CustomersEntity c WHERE c.customerName = :name AND c.customerPhone = :phone")
     List<CustomersEntity> findByNameAndPhone(@Param("name") String name,
                                              @Param("phone") String phone);
 
-    // 🔹 EMAIL + PHONE
+    // EMAIL + PHONE
     @Query("SELECT c FROM CustomersEntity c WHERE c.customerEmail = :email AND c.customerPhone = :phone")
     CustomersEntity findByEmailAndPhone(@Param("email") String email,
                                         @Param("phone") String phone);

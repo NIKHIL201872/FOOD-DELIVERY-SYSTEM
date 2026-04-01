@@ -25,38 +25,38 @@ public class AddressController {
 	@Autowired
 	AddressService addressService;
 	
-	@PostMapping       //chole geche
+	@PostMapping       
 	public String addAddress(@RequestBody DeliveryAddressesEntity address) {
 		addressService.addAddress(address);
 		return "Address added";
 	}
 	
-	// 🔹 GET BY ID
+	// GET BY ID
     @GetMapping("/by-id")
     public DeliveryAddresses getById(@RequestParam("id") int id) {
         return addressService.getById(id);
     }
 
-    // 🔹 GET BY CITY
+    // GET BY CITY
     @GetMapping("/by-city")
     public List<DeliveryAddresses> getByCity(@RequestParam("city") String city) {
         return addressService.getByCity(city);
     }
 
-    // 🔹 GET BY STATE
+    // GET BY STATE
     @GetMapping("/by-state")
     public List<DeliveryAddresses> getByState(@RequestParam("state") String state) {
         return addressService.getByState(state);
     }
 
-    // 🔹 GET BY POSTAL CODE
+    // GET BY POSTAL CODE
     @GetMapping("/by-postal")
     public List<DeliveryAddresses> getByPostalCode(@RequestParam("postalCode") String postalCode) {
         return addressService.getByPostalCode(postalCode);
     }
     
     
- // 🔹 CITY + STATE
+ // CITY + STATE
     @GetMapping("/by-city-state")
     public List<DeliveryAddresses> getByCityAndState(
             @RequestParam String city,
@@ -65,7 +65,7 @@ public class AddressController {
         return addressService.getByCityAndState(city, state);
     }
 
-    // 🔹 CITY + POSTAL
+    // CITY + POSTAL
     @GetMapping("/by-city-postal")
     public List<DeliveryAddresses> getByCityAndPostal(
             @RequestParam String city,

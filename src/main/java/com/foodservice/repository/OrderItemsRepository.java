@@ -32,9 +32,4 @@ public interface OrderItemsRepository extends JpaRepository<OrderItemsEntity, In
 		       "ORDER BY totalQty DESC")
 		List<Object[]> findMostOrderedItems();
 	
-	 // DELETE ALL ITEMS FOR AN ORDER
-	 @Modifying
-	 @Transactional
-	 @Query("DELETE FROM OrderItemsEntity oi WHERE oi.order.orderId = :orderId")
-	 void deleteAllByOrder_OrderId(@Param("orderId") Integer orderId);
-}
+	 }

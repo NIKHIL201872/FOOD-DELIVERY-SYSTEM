@@ -106,16 +106,7 @@ class MenuItemsServiceTest {
         assertEquals(new BigDecimal("199.0"), entity.getItemPrice());
     }
 
-    @Test
-    void updatePrice_returnsSuccessMessage() {
-        when(menuItemsDAO.findById(1)).thenReturn(entity);
-        when(menuItemsDAO.save(entity)).thenReturn(entity);
-
-        String result = service.updatePrice(1, 250.0);
-
-        assertEquals("Menu item price updated successfully for ID: 1", result);
-        assertEquals(new BigDecimal("250.0"), entity.getItemPrice());
-    }
+    
 
     @Test
     void deleteItem_returnsSuccessMessage() {
@@ -147,16 +138,7 @@ class MenuItemsServiceTest {
         assertEquals(1, result.get(0).getItemId());
     }
 
-    @Test
-    void saveAll_returnsSuccessMessage() {
-        when(mapper.map(dto, MenuItemsEntity.class)).thenReturn(entity);
-        when(menuItemsDAO.saveAll(List.of(entity))).thenReturn(List.of(entity));
-
-        String result = service.saveAll(List.of(dto));
-
-        assertEquals("1 menu item(s) inserted successfully", result);
-        verify(menuItemsDAO).saveAll(List.of(entity));
-    }
+    
 
     @Test
     void sortItems_returnsSortedList() {
@@ -194,30 +176,9 @@ class MenuItemsServiceTest {
         verify(menuItemsDAO).findByName("Burger");
     }
 
-    @Test
-    void getItemsByCustomer_returnsList() {
-        when(menuItemsDAO.findItemsByCustomer(101)).thenReturn(List.of(entity));
-        when(mapper.map(entity, MenuItems.class)).thenReturn(new MenuItems(1, "Burger", "Cheese Burger", 199.0, null));
+    
 
-        List<MenuItems> result = service.getItemsByCustomer(101);
-
-        assertEquals(1, result.size());
-        assertEquals(1, result.get(0).getItemId());
-        verify(menuItemsDAO).findItemsByCustomer(101);
-    }
-
-    @Test
-    void getItemsByOrderDate_returnsList() {
-        when(menuItemsDAO.findItemsByOrderDate("2026-03-30")).thenReturn(List.of(entity));
-        when(mapper.map(entity, MenuItems.class)).thenReturn(new MenuItems(1, "Burger", "Cheese Burger", 199.0, null));
-
-        List<MenuItems> result = service.getItemsByOrderDate("2026-03-30");
-
-        assertEquals(1, result.size());
-        assertEquals("Burger", result.get(0).getItemName());
-        verify(menuItemsDAO).findItemsByOrderDate("2026-03-30");
-    }
-
+    
     @Test
     void getItemsByRating_returnsList() {
         when(menuItemsDAO.findItemsByRating(4)).thenReturn(List.of(entity));

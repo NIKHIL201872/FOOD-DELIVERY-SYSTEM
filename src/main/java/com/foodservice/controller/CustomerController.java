@@ -26,39 +26,39 @@ public class CustomerController {
 	@Autowired
 	private CustomerService customerService;
 	
-	@PostMapping("/register")   // chole geche 
+	@PostMapping("/register")  
 	public ResponseEntity<String> createCustomer(@RequestBody Customers customers) {
 		customerService.customerRegistration(customers);
 		return ResponseEntity.ok("Customer added successfully");
 	}
 	
 	
-	@GetMapping("/allcustomers")    // chole geche
+	@GetMapping("/allcustomers")  
 	public List<Customers> getAllCustomerDetails() {
 		return customerService.getAllCustomers();
 		//return "All customer details";
 	}
 	
 	
-	@GetMapping("/{id}")     // chole geche
+	@GetMapping("/{id}")     
 	public Customers getCustomerById(@PathVariable("id") int id) {
 		return customerService.getCustomerById(id);
 		//return "Customer fetched";
 	}
 	
-    // 🔹 GET BY NAME
+    //GET BY NAME
     @GetMapping("/by-name")
     public List<Customers> getByName(@RequestParam("name") String name) {
         return customerService.getCustomerByName(name);
     }
 
-    // 🔹 GET BY EMAIL
+    // GET BY EMAIL
     @GetMapping("/by-email")
     public Customers getByEmail(@RequestParam("email") String email) {
         return customerService.getCustomerByEmail(email);
     }
 
-    // 🔹 GET BY PHONE
+    // GET BY PHONE
     @GetMapping("/by-phone")
     public Customers getByPhone(@RequestParam("phone") String phone) {
         return customerService.getCustomerByPhone(phone);
@@ -72,7 +72,7 @@ public class CustomerController {
         return customerService.getByNameAndEmail(name, email);
     }
 
-    // 🔹 NAME + PHONE
+    //NAME + PHONE
     @GetMapping("/by-name-phone")
     public List<Customers> getByNameAndPhone(
             @RequestParam String name,
@@ -81,7 +81,7 @@ public class CustomerController {
         return customerService.getByNameAndPhone(name, phone);
     }
 
-    // 🔹 EMAIL + PHONE
+    // EMAIL + PHONE
     @GetMapping("/by-email-phone")
     public Customers getByEmailAndPhone(
             @RequestParam String email,
@@ -89,14 +89,14 @@ public class CustomerController {
 
         return customerService.getByEmailAndPhone(email, phone);
     }
-	@PutMapping("/{id}")   // chole geche
+	@PutMapping("/{id}")  
 	public String updateCustomer(@PathVariable("id") int id, @RequestBody Customers customers) {
 		customerService.updateCustomer(id, customers);
 		return "Customer updated";
 	}
 	
 	
-//	@DeleteMapping("/{id}")   // chole geche
+//	@DeleteMapping("/{id}")   
 //	public String deleteCustomer(@PathVariable("id") int id) {
 //		customerService.deleteCustomer(id);
 //		return "Customer deleted";

@@ -57,17 +57,7 @@ public class MenuItemsDAO {
         return list;
     }
 
-    public List<MenuItemsEntity> findItemsByOrderId(Integer orderId) {
-        List<MenuItemsEntity> list =
-                menuItemsRepository.findItemsByOrderId(orderId);
-
-        if (list == null || list.isEmpty()) {
-            throw new ResourceNotFoundException(
-                    "No items found for order id: " + orderId);
-        }
-
-        return list;
-    }
+    
 
     // ---------------- SEARCH ----------------
 
@@ -112,21 +102,8 @@ public class MenuItemsDAO {
 
     // ---------------- BULK ----------------
 
-    public List<MenuItemsEntity> saveAll(List<MenuItemsEntity> items) {
-        return menuItemsRepository.saveAll(items);
-    }
-
-    public void deleteByRestaurant(Integer restaurantId) {
-        List<MenuItemsEntity> list =
-                menuItemsRepository.findByRestaurantRestaurantId(restaurantId);
-
-        if (list == null || list.isEmpty()) {
-            throw new ResourceNotFoundException(
-                    "No items found for restaurant id: " + restaurantId);
-        }
-
-        menuItemsRepository.deleteByRestaurantId(restaurantId);
-    }
+    
+    
 
     // ---------------- SORT ----------------
 
@@ -147,31 +124,8 @@ public class MenuItemsDAO {
 
     // ---------------- COMPLEX METHODS ----------------
 
-    // Items ordered by a specific customer
-    public List<MenuItemsEntity> findItemsByCustomer(Integer customerId) {
-        List<MenuItemsEntity> list =
-                menuItemsRepository.findItemsByCustomer(customerId);
 
-        if (list == null || list.isEmpty()) {
-            throw new ResourceNotFoundException(
-                    "No items found for customer id: " + customerId);
-        }
-
-        return list;
-    }
-
-    // Items ordered on a specific date
-    public List<MenuItemsEntity> findItemsByOrderDate(String date) {
-        List<MenuItemsEntity> list =
-                menuItemsRepository.findItemsByOrderDate(date);
-
-        if (list == null || list.isEmpty()) {
-            throw new ResourceNotFoundException(
-                    "No items found for given date");
-        }
-
-        return list;
-    }
+    
 
     // Top selling items (most frequently ordered by quantity)
     public List<MenuItemsEntity> findTopSellingItems() {

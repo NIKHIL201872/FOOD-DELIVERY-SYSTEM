@@ -37,7 +37,7 @@ public class CustomerService {
 //
 //		return mapper.map(saved, Customers.class);
 		
-		// 🔴 DUPLICATE CHECK
+		//  DUPLICATE CHECK
 	    List<CustomersEntity> duplicates = customerDAO.checkDuplicate(
 	            customers.getCustomerEmail(),
 	            customers.getCustomerPhone()
@@ -55,7 +55,7 @@ public class CustomerService {
 	        }
 	    }
 
-	    // ✅ EXISTING LOGIC (UNCHANGED)
+	    //  EXISTING LOGIC (UNCHANGED)
 	    Integer maxId = customerDAO.findMaxCustomerId();
 	    Integer newId = (maxId == null ? 1 : maxId + 1);
 
@@ -165,7 +165,7 @@ public class CustomerService {
 					.collect(Collectors.toList());
 		}
 
-		// 🔹 BY EMAIL
+		//  BY EMAIL
 		if (email != null) {
 			CustomersEntity entity = customerDAO.getByEmail(email);
 
@@ -176,7 +176,7 @@ public class CustomerService {
 			return List.of(mapper.map(entity, Customers.class));
 		}
 
-		// 🔹 BY PHONE
+		//  BY PHONE
 		if (phone != null) {
 			CustomersEntity entity = customerDAO.getByPhone(phone);
 
@@ -187,7 +187,7 @@ public class CustomerService {
 			return List.of(mapper.map(entity, Customers.class));
 		}
 
-		// ❌ No param passed
+		//  No param passed
 		throw new NoCustomerException("Pass at least one param: name / email / phone");
 	}
 	
@@ -204,7 +204,7 @@ public class CustomerService {
                 .collect(Collectors.toList());
     }
 
-    // 🔹 NAME + PHONE
+    //  NAME + PHONE
     public List<Customers> getByNameAndPhone(String name, String phone) throws NoCustomerException {
 
         List<CustomersEntity> list = customerDAO.getByNameAndPhone(name, phone);
@@ -218,7 +218,7 @@ public class CustomerService {
                 .collect(Collectors.toList());
     }
 
-    // 🔹 EMAIL + PHONE
+    //  EMAIL + PHONE
     public Customers getByEmailAndPhone(String email, String phone) throws NoCustomerException {
 
         CustomersEntity entity = customerDAO.getByEmailAndPhone(email, phone);

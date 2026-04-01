@@ -36,7 +36,7 @@ public class CouponsService {
                 .max(Integer::compareTo)
                 .orElse(0) + 1;
 
-        // ⚡ ModelMapper conversion
+        // ModelMapper conversion
         CouponsEntity c = mapper.map(dto, CouponsEntity.class);
         c.setCouponId(newId);
 
@@ -46,18 +46,18 @@ public class CouponsService {
     }
 
 
-    // ✅ GET ALL
+    //  GET ALL
     public List<CouponsEntity> getAllCoupons() {
         return repository.findAll();
     }
 
-    // ✅ GET BY ID
+    //  GET BY ID
     public CouponsEntity getCoupon(Integer id) {
         return repository.findById(id)
                 .orElseThrow(() -> new CouponNotFoundException("Coupon not found"));
     }
 
-    // ✅ FILTERS (NO STREAMS NOW 🔥)
+    //  FILTERS (NO STREAMS NOW )
 
     public List<CouponsEntity> getByCouponCode(String code) {
         List<CouponsEntity> list = repository.findByCouponCodeIgnoreCase(code);
@@ -126,7 +126,7 @@ public class CouponsService {
         return list;
     }
 
-    // ✅ VALIDATION
+    //  VALIDATION
     public String validateCoupon(Integer id) {
 
         CouponsEntity coupon = getCoupon(id);
@@ -139,7 +139,7 @@ public class CouponsService {
         return "Coupon is valid";
     }
 
-    // ✅ ACTIVE / EXPIRED (still using logic — fine)
+    //  ACTIVE / EXPIRED (still using logic — fine)
     public List<CouponsEntity> getActiveCoupons() {
         return repository.findAll().stream()
                 .filter(c -> c.getExpiryDate() == null ||
@@ -154,7 +154,7 @@ public class CouponsService {
                 .toList();
     }
 
-    // ✅ UPDATES
+    //  UPDATES
     public String updateDiscount(Integer id, BigDecimal discount) {
 
         CouponsEntity coupon = getCoupon(id);

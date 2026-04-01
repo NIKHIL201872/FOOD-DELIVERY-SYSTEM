@@ -36,7 +36,7 @@ public class DeliveryDriversDAO {
         driverRepo.deleteById(id);
     }
 
- // 🔥 Assign Driver to Order
+ //  Assign Driver to Order
     public void assignDriverToOrder(Integer driverId, Integer orderId) {
 
         DeliveryDriversEntity driver = findById(driverId);
@@ -50,13 +50,13 @@ public class DeliveryDriversDAO {
         ordersRepo.save(order);
     }
 
-    // 🔥 Get Orders by Driver
+    //  Get Orders by Driver
     public List<OrdersEntity> getOrdersByDriver(Integer driverId) {
         DeliveryDriversEntity driver = findById(driverId);
         return ordersRepo.findByDeliveryDriver(driver); // ✅ better than lazy
     }
 
-    // 🔥 Complete Delivery
+    //  Complete Delivery
     public void completeDelivery(Integer driverId, Integer orderId) {
 
         OrdersEntity order = ordersRepo.findById(orderId)

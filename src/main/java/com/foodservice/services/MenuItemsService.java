@@ -106,21 +106,7 @@ public class MenuItemsService {
         return "Menu item updated successfully for ID: " + id;
     }
 
-    @Transactional
-    public String updatePrice(Integer id, Double price) {
-        if (id == null || id <= 0) {
-            throw new MenuItemNotFoundException("Item id not found");
-        }
-        if (price == null || price < 0) {
-            throw new MenuItemNotFoundException("Price parameter not found or invalid");
-        }
-
-        MenuItemsEntity existing = menuItemsDAO.findById(id);
-        existing.setItemPrice(BigDecimal.valueOf(price));
-        menuItemsDAO.save(existing);
-        return "Menu item price updated successfully for ID: " + id;
-    }
-
+    
     // ---------------- DELETE ----------------
 
     public String deleteItem(Integer id) {
@@ -131,13 +117,7 @@ public class MenuItemsService {
         return "Menu item deleted successfully for ID: " + id;
     }
 
-    public String deleteByRestaurant(Integer restaurantId) {
-        if (restaurantId == null || restaurantId <= 0) {
-            throw new MenuItemNotFoundException("Restaurant id not found");
-        }
-        menuItemsDAO.deleteByRestaurant(restaurantId);
-        return "All menu items deleted successfully for Restaurant ID: " + restaurantId;
-    }
+   
 
     // ---------------- RELATION ----------------
 
@@ -151,15 +131,7 @@ public class MenuItemsService {
                 .toList();
     }
 
-    public List<MenuItems> getItemsByOrderId(Integer orderId) {
-        if (orderId == null || orderId <= 0) {
-            throw new MenuItemNotFoundException("Order id not found");
-        }
-        return menuItemsDAO.findItemsByOrderId(orderId)
-                .stream()
-                .map(this::convertToDTO)
-                .toList();
-    }
+    
 
     // ---------------- SEARCH ----------------
 
@@ -196,19 +168,7 @@ public class MenuItemsService {
                 .toList();
     }
 
-    // ---------------- BULK ----------------
-
-    @Transactional
-    public String saveAll(List<MenuItems> items) {
-        if (items == null || items.isEmpty()) {
-            throw new MenuItemNotFoundException("Item list payload not found");
-        }
-        List<MenuItemsEntity> entities = items.stream()
-                .map(this::convertToEntity)
-                .toList();
-        menuItemsDAO.saveAll(entities);
-        return items.size() + " menu item(s) inserted successfully";
-    }
+   
 
     // ---------------- SORT ----------------
 
@@ -247,26 +207,7 @@ public class MenuItemsService {
 
     // ---------------- COMPLEX APIs ----------------
 
-    public List<MenuItems> getItemsByCustomer(Integer customerId) {
-        if (customerId == null || customerId <= 0) {
-            throw new MenuItemNotFoundException("Customer id not found");
-        }
-        return menuItemsDAO.findItemsByCustomer(customerId)
-                .stream()
-                .map(this::convertToDTO)
-                .toList();
-    }
-
-    public List<MenuItems> getItemsByOrderDate(String date) {
-        if (date == null || date.isEmpty()) {
-            throw new MenuItemNotFoundException("Date parameter not found");
-        }
-        return menuItemsDAO.findItemsByOrderDate(date)
-                .stream()
-                .map(this::convertToDTO)
-                .toList();
-    }
-
+    
     public List<MenuItems> getTopSellingItems() {
         return menuItemsDAO.findTopSellingItems()
                 .stream()

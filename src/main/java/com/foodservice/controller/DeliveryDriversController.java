@@ -49,7 +49,7 @@ public class DeliveryDriversController {
     public void delete(@PathVariable("id") Integer id) {
         service.deleteDriver(id);
     }
- // 🔥 Assign Driver to Order
+ // Assign Driver to Order
     @PutMapping("/{driverId}/assign-order/{orderId}")
     public ResponseEntity<String> assignOrder(@PathVariable("driverId") Integer driverId,
                                               @PathVariable("orderId") Integer orderId) {
@@ -57,13 +57,13 @@ public class DeliveryDriversController {
         return ResponseEntity.ok("Driver Assigned");
     }
 
-    // 🔥 Get Orders of Driver
+    //  Orders of Driver
     @GetMapping("/{driverId}/orders")
     public List<OrdersEntity> getDriverOrders(@PathVariable("driverId") Integer driverId) {
         return service.getOrdersByDriver(driverId);
     }
 
-    // 🔥 Complete Delivery
+    // Complete Delivery
     @PutMapping("/{driverId}/complete-order/{orderId}")
     public ResponseEntity<String> completeOrder(@PathVariable("driverId") Integer driverId,
                                                 @PathVariable("orderId") Integer orderId) {

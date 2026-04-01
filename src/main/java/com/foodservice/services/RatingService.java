@@ -35,7 +35,7 @@ public class RatingService {
    
     @Autowired
     private RatingRepository ratingrepo;
-    // ✅ CREATE
+    //  CREATE
     public RatingEntity addRating(Rating dto) {
 
         if (dto.getRating() < 1 || dto.getRating() > 5) {
@@ -59,12 +59,12 @@ public class RatingService {
         return ratingDAO.save(rating);
     }
 
-    // ✅ GET ALL
+    //  GET ALL
     public List<RatingEntity> getAll() {
         return ratingDAO.findAll();
     }
 
-    // ✅ GET BY ID
+    //  GET BY ID
     public RatingEntity getById(Integer id) {
         RatingEntity rating = ratingDAO.findById(id);
 
@@ -75,7 +75,7 @@ public class RatingService {
         return rating;
     }
 
-    // ✅ GET BY RESTAURANT
+    //  GET BY RESTAURANT
     public List<Rating> getByRestaurant(Integer restaurantId) {
 
         List<RatingEntity> list =
@@ -102,11 +102,11 @@ public class RatingService {
 
         }).toList();
     }
-    // ✅ GET BY RESTAURANT with menu
+    //  GET BY RESTAURANT with menu
     public List<RatingEntity> getByRestaurantwithmenu(Integer restaurantId) {
         return ratingDAO.findByRestaurantId(restaurantId);
     }
-    // ✅ GET BY ORDER
+    //  GET BY ORDER
     public List<Rating> getByOrder(Integer orderId) {
         List<RatingEntity> list = ratingrepo.findByOrder_OrderId(orderId);
 
@@ -121,12 +121,12 @@ public class RatingService {
         }).toList();
     }
 
-    // ✅ GET BY RATING VALUE
+    //  GET BY RATING VALUE
     public List<RatingEntity> getByRating(Integer rating) {
         return ratingDAO.findByRating(rating);
     }
 
-    // ✅ UPDATE
+    //  UPDATE
     public RatingEntity update(Integer id, Rating dto) {
 
         RatingEntity rating = getById(id);
@@ -145,7 +145,7 @@ public class RatingService {
         return ratingDAO.save(rating);
     }
 
-    // ✅ DELETE
+    //  DELETE
     public void delete(Integer id) {
         RatingEntity rating = getById(id);
         ratingDAO.delete(rating);

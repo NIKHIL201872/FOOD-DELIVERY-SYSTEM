@@ -33,14 +33,10 @@ public class OrdersDAO {
         return ordersRepository.findAll();
     }
 
-    public void deleteById(Integer orderId) {
-        ordersRepository.deleteById(orderId);
-    }
+    public boolean existsById(Integer orderId) 
+    { return ordersRepository.existsById(orderId); }
 
-    public boolean existsById(Integer orderId) {
-        return ordersRepository.existsById(orderId);
-    }
-
+    
     public List<OrdersEntity> findByCustomerId(Integer customerId) {
         return ordersRepository.findByCustomer_CustomerId(customerId);
     }
@@ -65,16 +61,7 @@ public class OrdersDAO {
         return ordersRepository.findByRestaurant_RestaurantIdAndOrderStatus(restaurantId, status);
     }
 
-    public List<OrdersEntity> findByDateRange(LocalDateTime startDate, LocalDateTime endDate) {
-        return ordersRepository.findByOrderDateBetween(startDate, endDate);
-    }
-
-    public List<OrdersEntity> findByRestaurantAndDateRange(Integer restaurantId,
-                                                           LocalDateTime startDate,
-                                                           LocalDateTime endDate) {
-        return ordersRepository.findByRestaurantAndDateRange(restaurantId, startDate, endDate);
-    }
-
+    
     public Long countByRestaurantAndStatus(Integer restaurantId, String status) {
         return ordersRepository.countByRestaurantAndStatus(restaurantId, status);
     }
@@ -84,19 +71,11 @@ public class OrdersDAO {
     }
  // OrdersDAO.java - add these
 
-    public List<OrdersEntity> findPendingUnassigned() {
-        return ordersRepository.findPendingUnassigned();
-    }
+    
 
-    public List<OrdersEntity> findActiveByDriver(Integer driverId) {
-        return ordersRepository.findByDeliveryDriver_DriverIdAndOrderStatus(driverId, "OUT_FOR_DELIVERY");
-    }
+    
 
-    public Double sumRevenueByRestaurantAndDateRange(Integer restaurantId,
-                                                      LocalDateTime startDate,
-                                                      LocalDateTime endDate) {
-        return ordersRepository.sumRevenueByRestaurantAndDateRange(restaurantId, startDate, endDate);
-    }
+    
 
     public Long countByCustomerId(Integer customerId) {
         return ordersRepository.countByCustomer_CustomerId(customerId);

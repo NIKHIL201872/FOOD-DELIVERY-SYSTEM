@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class OrderCouponsControllerTest {
 
-    // ✅ Exception Handler (same pattern as before)
+    // Exception Handler (same pattern as before)
     @RestControllerAdvice
     static class TestExceptionHandler {
 

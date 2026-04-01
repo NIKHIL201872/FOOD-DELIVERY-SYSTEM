@@ -91,13 +91,7 @@ class OrderItemsServiceTest {
         verify(dao).save(any(OrderItemsEntity.class));
     }
 
-    @Test
-    void createWithManualId_throwsConflictWhenIdAlreadyExists() {
-        when(dao.findById(1)).thenReturn(Optional.of(entity));
-
-        assertThrows(ResourceConflictException.class, () -> service.createWithManualId(dto));
-        verify(dao, never()).save(any(OrderItemsEntity.class));
-    }
+   
 
     @Test
     void getById_returnsDto() {
@@ -168,17 +162,7 @@ class OrderItemsServiceTest {
         verify(dao).save(entity);
     }
 
-    @Test
-    void deleteByOrderId_deletesAllWhenItemsExist() {
-        when(ordersRepository.findById(101)).thenReturn(Optional.of(order));
-        when(dao.findByOrderId(101)).thenReturn(List.of(entity));
-        doNothing().when(dao).deleteAllByOrderId(101);
-
-        String result = service.deleteByOrderId(101);
-
-        assertEquals("All order items deleted successfully for Order ID: 101", result);
-        verify(dao).deleteAllByOrderId(101);
-    }
+  
 
     @Test
     void getByOrderAndItem_throwsWhenNoData() {

@@ -47,16 +47,7 @@ class OrdersControllerTest {
         verify(ordersService).createOrder(sampleOrder);
     }
 
-    @Test
-    void createOrderManual_returnsCreated() {
-        when(ordersService.createOrderManual(sampleOrder)).thenReturn("Order inserted manual");
-
-        ResponseEntity<String> response = ordersController.createOrderManual(sampleOrder);
-
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals("Order inserted manual", response.getBody());
-        verify(ordersService).createOrderManual(sampleOrder);
-    }
+    
 
     @Test
     void getAllOrders_withoutStatus_returnsAllOrders() {
@@ -146,33 +137,9 @@ class OrdersControllerTest {
         verify(ordersService).getOrdersByDriver(301);
     }
 
-    @Test
-    void getOrdersByDateRange_returnsOrders() {
-        LocalDateTime start = LocalDateTime.of(2026, 3, 1, 0, 0);
-        LocalDateTime end = LocalDateTime.of(2026, 3, 31, 23, 59);
-        when(ordersService.getOrdersByDateRange(start, end)).thenReturn(List.of(sampleOrder));
+    
 
-        ResponseEntity<List<Orders>> response = ordersController.getOrdersByDateRange(start, end);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1, response.getBody().size());
-        verify(ordersService).getOrdersByDateRange(start, end);
-    }
-
-    @Test
-    void getOrdersByRestaurantAndDateRange_returnsOrders() {
-        LocalDateTime start = LocalDateTime.of(2026, 3, 1, 0, 0);
-        LocalDateTime end = LocalDateTime.of(2026, 3, 31, 23, 59);
-        when(ordersService.getOrdersByRestaurantAndDateRange(201, start, end))
-                .thenReturn(List.of(sampleOrder));
-
-        ResponseEntity<List<Orders>> response =
-                ordersController.getOrdersByRestaurantAndDateRange(201, start, end);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1, response.getBody().size());
-        verify(ordersService).getOrdersByRestaurantAndDateRange(201, start, end);
-    }
+    
 
     @Test
     void countOrdersByRestaurantAndStatus_returnsCountMap() {
@@ -219,75 +186,7 @@ class OrdersControllerTest {
         verify(ordersService).assignDriver(1, 301);
     }
 
-    @Test
-    void cancelOrder_returnsOk() {
-        when(ordersService.cancelOrder(1)).thenReturn("Order cancelled");
 
-        ResponseEntity<String> response = ordersController.cancelOrder(1);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Order cancelled", response.getBody());
-        verify(ordersService).cancelOrder(1);
-    }
-
-    @Test
-    void deleteOrder_returnsOkMessage() {
-        ResponseEntity<String> response = ordersController.deleteOrder(1);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Order deleted successfully for ID: 1", response.getBody());
-        verify(ordersService).deleteOrder(1);
-    }
-
-    @Test
-    void getPendingUnassignedOrders_returnsOrders() {
-        when(ordersService.getPendingUnassignedOrders()).thenReturn(List.of(sampleOrder));
-
-        ResponseEntity<List<Orders>> response = ordersController.getPendingUnassignedOrders();
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1, response.getBody().size());
-        verify(ordersService).getPendingUnassignedOrders();
-    }
-
-    @Test
-    void getActiveOrdersByDriver_returnsOrders() {
-        when(ordersService.getActiveOrdersByDriver(301)).thenReturn(List.of(sampleOrder));
-
-        ResponseEntity<List<Orders>> response = ordersController.getActiveOrdersByDriver(301);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1, response.getBody().size());
-        verify(ordersService).getActiveOrdersByDriver(301);
-    }
-
-    @Test
-    void getRestaurantRevenue_returnsMap() {
-        LocalDateTime start = LocalDateTime.of(2026, 3, 1, 0, 0);
-        LocalDateTime end = LocalDateTime.of(2026, 3, 31, 23, 59);
-        Map<String, Object> revenue = Map.of("restaurantId", 201, "revenue", 1299.0);
-        when(ordersService.getRestaurantRevenue(201, start, end)).thenReturn(revenue);
-
-        ResponseEntity<Map<String, Object>> response =
-                ordersController.getRestaurantRevenue(201, start, end);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1299.0, response.getBody().get("revenue"));
-        verify(ordersService).getRestaurantRevenue(201, start, end);
-    }
-
-    @Test
-    void getCustomerSummary_returnsSummary() {
-        CustomerOrderSummary summary = new CustomerOrderSummary(101, 5L, 201);
-        when(ordersService.getCustomerSummary(101)).thenReturn(summary);
-
-        ResponseEntity<CustomerOrderSummary> response = ordersController.getCustomerSummary(101);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(101, response.getBody().getCustomerId());
-        assertEquals(5L, response.getBody().getTotalOrders());
-        verify(ordersService).getCustomerSummary(101);
-    }
 
     @Test
     void getAllOrdersPaged_returnsPagedResponse() {

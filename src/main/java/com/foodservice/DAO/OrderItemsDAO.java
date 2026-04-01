@@ -26,9 +26,7 @@ public class OrderItemsDAO {
         return repository.findById(id);
     }
 
-    public void deleteById(Integer id) {
-        repository.deleteById(id);
-    }
+    
 
     //  FIXED
     public List<OrderItemsEntity> findByOrderId(Integer orderId) {
@@ -54,13 +52,7 @@ public class OrderItemsDAO {
         return repository.findMostOrderedItems();
     }
 
-    // SAVE ALL (BULK)
-    public List<OrderItemsEntity> saveAll(List<OrderItemsEntity> entities) {
-        return repository.saveAll(entities);
-    }
+    
 
-    // DELETE ALL BY ORDER ID
-    public void deleteAllByOrderId(Integer orderId) {
-        repository.deleteAllByOrder_OrderId(orderId);
-    }
+    
 }

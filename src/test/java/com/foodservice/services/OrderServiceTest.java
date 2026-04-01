@@ -94,13 +94,7 @@ class OrderServiceTest {
         verify(ordersDao).save(any(OrdersEntity.class));
     }
 
-    @Test
-    void createOrderManual_throwsWhenIdExists() {
-        when(ordersDao.existsById(1)).thenReturn(true);
-
-        assertThrows(RuntimeException.class, () -> service.createOrderManual(dto));
-        verify(ordersDao, never()).save(any(OrdersEntity.class));
-    }
+    
 
     @Test
     void getOrderById_returnsDto() {
@@ -152,58 +146,6 @@ class OrderServiceTest {
 
         assertEquals("Driver ID: 301 assigned successfully to Order ID: 1", result);
         assertEquals(301, noDriverOrder.getDeliveryDriver().getDriverId());
-    }
-
-    @Test
-    void deleteOrder_deletesWhenExists() {
-        when(ordersDao.existsById(1)).thenReturn(true);
-
-        service.deleteOrder(1);
-
-        verify(ordersDao).deleteById(1);
-    }
-
-    @Test
-    void deleteOrder_throwsWhenNotFound() {
-        when(ordersDao.existsById(99)).thenReturn(false);
-
-        assertThrows(RuntimeException.class, () -> service.deleteOrder(99));
-    }
-
-    @Test
-    void getCustomerSummary_returnsSummary() {
-        when(customersRepository.findById(101)).thenReturn(Optional.of(customer));
-        when(ordersDao.countByCustomerId(101)).thenReturn(5L);
-        when(ordersDao.findTopRestaurantByCustomer(101)).thenReturn(new Object[]{201, 3L});
-
-        CustomerOrderSummary result = service.getCustomerSummary(101);
-
-        assertEquals(101, result.getCustomerId());
-        assertEquals(5L, result.getTotalOrders());
-        assertEquals(201, result.getTopRestaurantId());
-    }
-
-    @Test
-    void getRestaurantRevenue_returnsMap() {
-        LocalDateTime start = LocalDateTime.of(2026, 3, 1, 0, 0);
-        LocalDateTime end = LocalDateTime.of(2026, 3, 31, 23, 59);
-        when(ordersDao.sumRevenueByRestaurantAndDateRange(201, start, end)).thenReturn(2500.0);
-
-        Map<String, Object> result = service.getRestaurantRevenue(201, start, end);
-
-        assertEquals(201, result.get("restaurantId"));
-        assertEquals(2500.0, result.get("revenue"));
-    }
-
-    @Test
-    void cancelOrder_changesStatusToCancelled() {
-        when(ordersDao.findById(1)).thenReturn(Optional.of(orderEntity));
-        when(ordersDao.save(orderEntity)).thenReturn(orderEntity);
-
-        String result = service.cancelOrder(1);
-
-        assertEquals("Order ID: 1 has been cancelled successfully", result);
-        assertEquals("CANCELLED", orderEntity.getOrderStatus());
     }
 
     @Test

@@ -19,11 +19,7 @@ public interface MenuItemsRepository extends JpaRepository<MenuItemsEntity, Inte
 
     List<MenuItemsEntity> findByRestaurantRestaurantId(Integer restaurantId);
 
-    @Query("SELECT m FROM MenuItemsEntity m " +
-           "JOIN OrderItemsEntity oi ON m.itemId = oi.item.itemId " +
-           "WHERE oi.order.orderId = :orderId")
-    List<MenuItemsEntity> findItemsByOrderId(@Param("orderId") Integer orderId);
-
+    
     // ---------------- SEARCH ----------------
 
     List<MenuItemsEntity> findByItemNameContainingIgnoreCase(String name);
@@ -35,20 +31,8 @@ public interface MenuItemsRepository extends JpaRepository<MenuItemsEntity, Inte
 
     // ---------------- COMPLEX QUERIES ----------------
 
-    // Items ordered by a specific customer
-    @Query("SELECT DISTINCT m FROM MenuItemsEntity m " +
-           "JOIN OrderItemsEntity oi ON m.itemId = oi.item.itemId " +
-           "JOIN OrdersEntity o ON oi.order.orderId = o.orderId " +
-           "WHERE o.customer.customerId = :customerId")
-    List<MenuItemsEntity> findItemsByCustomer(@Param("customerId") Integer customerId);
-
-    // Items ordered on a specific date
-    @Query("SELECT DISTINCT m FROM MenuItemsEntity m " +
-           "JOIN OrderItemsEntity oi ON m.itemId = oi.item.itemId " +
-           "JOIN OrdersEntity o ON oi.order.orderId = o.orderId " +
-           "WHERE FUNCTION('DATE', o.orderDate) = :date")
-    List<MenuItemsEntity> findItemsByOrderDate(@Param("date") String date);
-
+    
+    
     // Top selling items (based on quantity)
     @Query("SELECT m FROM MenuItemsEntity m " +
            "JOIN OrderItemsEntity oi ON m.itemId = oi.item.itemId " +
@@ -64,10 +48,6 @@ public interface MenuItemsRepository extends JpaRepository<MenuItemsEntity, Inte
 
     // ---------------- DELETE ----------------
 
-    @Modifying
-    @Transactional
-    @Query("DELETE FROM MenuItemsEntity m WHERE m.restaurant.restaurantId = :restaurantId")
-    void deleteByRestaurantId(@Param("restaurantId") Integer restaurantId);
     
     
     //----------FIND ITEMS BY RESTAURANT ID AND RATING-------

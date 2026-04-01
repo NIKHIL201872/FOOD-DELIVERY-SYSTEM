@@ -27,21 +27,16 @@ public class MenuItemsController {
         return ResponseEntity.status(HttpStatus.CREATED).body(menuItemsService.saveItem(item));
     }
 
-    // 2.
-    @PostMapping("/bulk")
-    public ResponseEntity<String> saveAll(@RequestBody List<MenuItems> items) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(menuItemsService.saveAll(items));
-    }
-
+    
     // ---------------- READ ----------------
 
-    // 3.
+    // 2.
     @GetMapping
     public ResponseEntity<List<MenuItems>> getAllItems() {
         return ResponseEntity.ok(menuItemsService.getAllItems());
     }
 
-    // 4.
+    // 3.
     @GetMapping("/{id}")
     public ResponseEntity<MenuItems> getItemById(@PathVariable("id") Integer id) {
         return ResponseEntity.ok(menuItemsService.getItemById(id));
@@ -49,7 +44,7 @@ public class MenuItemsController {
 
     // ---------------- UPDATE ----------------
 
-    // 5. Full update
+    // 4. Full update
     @PutMapping("/{id}")
     public ResponseEntity<String> updateItem(
             @PathVariable("id") Integer id,
@@ -57,48 +52,31 @@ public class MenuItemsController {
         return ResponseEntity.ok(menuItemsService.updateItem(id, item));
     }
 
-    // 6. Partial update — price only
-    @PatchMapping("/{id}/price")
-    public ResponseEntity<String> updatePrice(
-            @PathVariable("id") Integer id,
-            @RequestParam("price") Double price) {
-        return ResponseEntity.ok(menuItemsService.updatePrice(id, price));
-    }
+    
 
     // ---------------- DELETE ----------------
 
-    // 7.
+    // 5.
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteItem(@PathVariable("id") Integer id) {
         return ResponseEntity.ok(menuItemsService.deleteItem(id));
     }
 
-    // 8.
-    @DeleteMapping("/restaurant/{restaurantId}")
-    public ResponseEntity<String> deleteByRestaurant(
-            @PathVariable("restaurantId") Integer restaurantId) {
-        return ResponseEntity.ok(menuItemsService.deleteByRestaurant(restaurantId));
-    }
+    
 
     // ---------------- RELATION ----------------
 
-    // 9.
+    // 6.
     @GetMapping("/restaurant/{restaurantId}")
     public ResponseEntity<List<MenuItems>> getByRestaurant(
             @PathVariable("restaurantId") Integer restaurantId) {
         return ResponseEntity.ok(menuItemsService.getByRestaurantId(restaurantId));
     }
 
-    // 10.
-    @GetMapping("/order/{orderId}")
-    public ResponseEntity<List<MenuItems>> getByOrder(
-            @PathVariable("orderId") Integer orderId) {
-        return ResponseEntity.ok(menuItemsService.getItemsByOrderId(orderId));
-    }
 
     // ---------------- SEARCH ----------------
 
-    // 11.
+    // 7.
     @GetMapping("/name/{name}")
     public ResponseEntity<List<MenuItems>> getByName(
             @PathVariable("name") String name) {
@@ -107,7 +85,7 @@ public class MenuItemsController {
 
     // ---------------- PRICE FILTERS ----------------
 
-    // 12.
+    // 8.
     @GetMapping("/price-range")
     public ResponseEntity<List<MenuItems>> getByPriceRange(
             @RequestParam("min") Double min,
@@ -115,7 +93,7 @@ public class MenuItemsController {
         return ResponseEntity.ok(menuItemsService.getByPriceRange(min, max));
     }
 
-    // 13.
+    // 9.
     @GetMapping("/restaurant/{restaurantId}/price-range")
     public ResponseEntity<List<MenuItems>> getByRestaurantAndPrice(
             @PathVariable("restaurantId") Integer restaurantId,
@@ -127,34 +105,22 @@ public class MenuItemsController {
 
     // ---------------- COMPLEX APIs ----------------
 
-    // 14.
-    @GetMapping("/customer/{customerId}")
-    public ResponseEntity<List<MenuItems>> getItemsByCustomer(
-            @PathVariable("customerId") Integer customerId) {
-        return ResponseEntity.ok(menuItemsService.getItemsByCustomer(customerId));
-    }
-
-    // 15.
-    @GetMapping("/order-date")
-    public ResponseEntity<List<MenuItems>> getItemsByOrderDate(
-            @RequestParam("date") String date) {
-        return ResponseEntity.ok(menuItemsService.getItemsByOrderDate(date));
-    }
-
-    // 16.
+    
+    
+    // 10.
     @GetMapping("/top-selling")
     public ResponseEntity<List<MenuItems>> getTopSellingItems() {
         return ResponseEntity.ok(menuItemsService.getTopSellingItems());
     }
 
-    // 17.
+    // 11.
     @GetMapping("/rating")
     public ResponseEntity<List<MenuItemWithRating>> getItemsByRating(
             @RequestParam("rating") int rating) {
         return ResponseEntity.ok(menuItemsService.getItemsByRating(rating));
     }
 
-    // 18.
+    // 12.
     @GetMapping("/restaurant/{restaurantId}/rating")
     public ResponseEntity<List<MenuItemWithRating>> getItemsByRestaurantAndRating(
             @PathVariable("restaurantId") Integer restaurantId,
@@ -165,7 +131,7 @@ public class MenuItemsController {
 
     // ---------------- SORT ----------------
 
-    // 19.
+    // 13.
     @GetMapping("/sort")
     public ResponseEntity<List<MenuItems>> sortItems(
             @RequestParam(value = "field", defaultValue = "itemPrice") String field,
@@ -175,7 +141,7 @@ public class MenuItemsController {
 
     // ---------------- PAGINATION ----------------
 
-    // 20.
+    // 14.
     @GetMapping("/page")
     public ResponseEntity<PagedResponse<MenuItems>> getPagedItems(
             @RequestParam("page") int page,

@@ -18,17 +18,17 @@ public interface DeliveryAddressesRepository extends JpaRepository<DeliveryAddre
     List<DeliveryAddressesEntity> findByPostalCode(String postalCode);
     
     
- // 🔹 CITY + STATE
+ // CITY + STATE
     @Query("SELECT a FROM DeliveryAddressesEntity a WHERE a.city = :city AND a.state = :state")
     List<DeliveryAddressesEntity> findByCityAndState(@Param("city") String city,
                                                      @Param("state") String state);
 
-    // 🔹 CITY + POSTAL CODE
+    //  CITY + POSTAL CODE
     @Query("SELECT a FROM DeliveryAddressesEntity a WHERE a.city = :city AND a.postalCode = :postalCode")
     List<DeliveryAddressesEntity> findByCityAndPostal(@Param("city") String city,
                                                       @Param("postalCode") String postalCode);
 
-    // 🔹 STATE + POSTAL CODE
+    //  STATE + POSTAL CODE
     @Query("SELECT a FROM DeliveryAddressesEntity a WHERE a.state = :state AND a.postalCode = :postalCode")
     List<DeliveryAddressesEntity> findByStateAndPostal(@Param("state") String state,
                                                        @Param("postalCode") String postalCode);

@@ -18,50 +18,50 @@ public class RatingController {
     private RatingService ratingService;
      
 
-    // ✅ CREATE
+    //CREATE
     @PostMapping
     public String add(@RequestBody Rating dto) {
          ratingService.addRating(dto);
          return "Rating created";
     }
 
-    // ✅ GET ALL
+    //GET ALL
     @GetMapping
     public List<RatingEntity> getAll() {
         return ratingService.getAll();
     }
 
-    // ✅ GET BY ID
+    //GET BY ID
     @GetMapping("/{id}")
     public RatingEntity getById(@PathVariable("id") Integer id) {
         return ratingService.getById(id);
     }
 
-    // ✅ GET BY RESTAURANT
+    //GET BY RESTAURANT
     @GetMapping("/restaurant/{restaurantId}")
     public List<Rating> getByRestaurant(@PathVariable("restaurantId") Integer restaurantId) {
         return ratingService.getByRestaurant(restaurantId);
     }
 
-    // ✅ GET BY ORDER
+    //GET BY ORDER
     @GetMapping("/order/{orderId}")
     public List<Rating> getByOrder(@PathVariable("orderId") Integer orderId) {
         return ratingService.getByOrder(orderId);
     }
 
-    // ✅ GET BY RATING VALUE with restaurant menu
+    //GET BY RATING VALUE with restaurant menu
     @GetMapping("/value/{rating}")
     public List<RatingEntity> getByRating(@PathVariable("rating") Integer rating) {
         return ratingService.getByRating(rating);
     }
 
-    // ✅ UPDATE
+    //UPDATE
     @PutMapping("/{id}")
     public RatingEntity update(@PathVariable("id") Integer id, @RequestBody Rating dto) {
         return ratingService.update(id, dto);
     }
 
-    // ✅ DELETE
+    //DELETE
     @DeleteMapping("/{id}")
     public String delete(@PathVariable("id") Integer id) {
         ratingService.delete(id);

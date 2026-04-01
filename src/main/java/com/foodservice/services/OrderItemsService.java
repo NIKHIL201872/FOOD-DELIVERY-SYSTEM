@@ -67,36 +67,7 @@ public class OrderItemsService {
         return "Order item inserted successfully with ID: " + entity.getOrderItemId();
     }
 
-    // ─────────────────────────────────────────
-    //  CREATE WITH MANUAL ID
-    // ─────────────────────────────────────────
-    public String createWithManualId(OrderItems dto) {
-        validateOrderAndItemIds(dto);
-        if (dto.getOrderItemId() == null) {
-            throw new OrderItemNotFoundException("Order item id not found in request");
-        }
-
-        dao.findById(dto.getOrderItemId())
-                .ifPresent(existing -> {
-                    throw new OrderItemConflictException(
-                            "OrderItem with id " + dto.getOrderItemId() + " already exists");
-                });
-
-        OrdersEntity order = ordersRepository.findById(dto.getOrderId())
-                .orElseThrow(() -> new OrderItemNotFoundException("Order not found"));
-        MenuItemsEntity item = menuItemsRepository.findById(dto.getItemId())
-                .orElseThrow(() -> new OrderItemNotFoundException("Item not found"));
-
-        OrderItemsEntity entity = new OrderItemsEntity();
-        entity.setOrderItemId(dto.getOrderItemId());
-        entity.setQuantity(dto.getQuantity());
-        entity.setOrder(order);
-        entity.setItem(item);
-
-        dao.save(entity);
-        return "Order item inserted successfully with ID: " + entity.getOrderItemId();
-    }
-
+    
     // ─────────────────────────────────────────
     //  GET ALL
     // ─────────────────────────────────────────
@@ -144,19 +115,7 @@ public class OrderItemsService {
         return "Order item updated successfully for ID: " + id;
     }
 
-    // ─────────────────────────────────────────
-    //  DELETE BY ID
-    // ─────────────────────────────────────────
-    public String delete(Integer id) {
-        if (id == null) {
-            throw new OrderItemNotFoundException("OrderItem id not found in request");
-        }
-        OrderItemsEntity existing = dao.findById(id)
-                .orElseThrow(() -> new OrderItemNotFoundException(
-                        "OrderItem not found with id " + id));
-        dao.deleteById(existing.getOrderItemId());
-        return "Order item deleted successfully for ID: " + id;
-    }
+    
 
     // ─────────────────────────────────────────
     //  GET BY ORDER ID
@@ -267,57 +226,11 @@ public class OrderItemsService {
         }).collect(Collectors.toList());
     }
 
-    // ─────────────────────────────────────────
-    //  6. BULK CREATE
-    // ─────────────────────────────────────────
-    public String createBulk(List<OrderItems> dtos) {
-        if (dtos == null || dtos.isEmpty()) {
-            throw new OrderItemNotFoundException("Order items payload not found");
-        }
-
-        Integer maxId = dao.getMaxId();
-        List<OrderItemsEntity> entities = new ArrayList<>();
-
-        for (OrderItems dto : dtos) {
-            OrdersEntity order = ordersRepository.findById(dto.getOrderId())
-                    .orElseThrow(() -> new OrderItemNotFoundException(
-                            "Order not found with id " + dto.getOrderId()));
-            MenuItemsEntity item = menuItemsRepository.findById(dto.getItemId())
-                    .orElseThrow(() -> new OrderItemNotFoundException(
-                            "Item not found with id " + dto.getItemId()));
-
-            OrderItemsEntity entity = new OrderItemsEntity();
-            entity.setOrderItemId(++maxId);
-            entity.setQuantity(dto.getQuantity());
-            entity.setOrder(order);
-            entity.setItem(item);
-            entities.add(entity);
-        }
-
-        dao.saveAll(entities);
-        return dtos.size() + " order item(s) inserted successfully";
-    }
+    
+    
 
     // ─────────────────────────────────────────
-    //  7. DELETE ALL ITEMS BY ORDER ID
-    // ─────────────────────────────────────────
-    public String deleteByOrderId(Integer orderId) {
-        if (orderId == null) {
-            throw new OrderItemNotFoundException("Order id not found in request");
-        }
-        ordersRepository.findById(orderId)
-                .orElseThrow(() -> new OrderItemNotFoundException(
-                        "Order not found with id " + orderId));
-        List<OrderItemsEntity> items = dao.findByOrderId(orderId);
-        if (items.isEmpty()) {
-            throw new OrderItemNotFoundException("No items found for orderId " + orderId);
-        }
-        dao.deleteAllByOrderId(orderId);
-        return "All order items deleted successfully for Order ID: " + orderId;
-    }
-
-    // ─────────────────────────────────────────
-    //  8. UPDATE QUANTITY ONLY (PATCH)
+    //  6. UPDATE QUANTITY ONLY (PATCH)
     // ─────────────────────────────────────────
     public String updateQuantity(Integer id, Integer quantity) {
         if (id == null) {
@@ -335,7 +248,7 @@ public class OrderItemsService {
     }
 
     // ─────────────────────────────────────────
-    //  9. GET ENRICHED ORDER ITEM DETAILS
+    //  7. GET ENRICHED ORDER ITEM DETAILS
     // ─────────────────────────────────────────
     public List<OrderItems> getOrderItemDetails(Integer orderId) {
         if (orderId == null) {
@@ -364,7 +277,7 @@ public class OrderItemsService {
                 .collect(Collectors.toList());
     }
 		 // ─────────────────────────────────────────
-		//  10. GET MENU ITEM BY ORDER ITEM ID
+		//  8. GET MENU ITEM BY ORDER ITEM ID
 		// ─────────────────────────────────────────
 		public OrderItems getMenuItemByOrderItemId(Integer id) {
 		    if (id == null) {

@@ -24,16 +24,9 @@ public class OrderItemsController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(dto));
     }
 
+    
     // ─────────────────────────────────────────
-    //  2. CREATE WITH MANUAL ID
-    // ─────────────────────────────────────────
-    @PostMapping("/manual")
-    public ResponseEntity<String> createWithManualId(@RequestBody OrderItems dto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.createWithManualId(dto));
-    }
-
-    // ─────────────────────────────────────────
-    //  3. GET ALL
+    //  2. GET ALL
     // ─────────────────────────────────────────
     @GetMapping
     public ResponseEntity<List<OrderItems>> getAll() {
@@ -41,7 +34,7 @@ public class OrderItemsController {
     }
 
     // ─────────────────────────────────────────
-    //  4. GET BY ID
+    //  3. GET BY ID
     // ─────────────────────────────────────────
     @GetMapping("/{id}")
     public ResponseEntity<OrderItems> getById(@PathVariable("id") Integer id) {
@@ -49,7 +42,7 @@ public class OrderItemsController {
     }
 
     // ─────────────────────────────────────────
-    //  5. UPDATE BY ID
+    //  4. UPDATE BY ID
     // ─────────────────────────────────────────
     @PutMapping("/{id}")
     public ResponseEntity<String> update(@PathVariable("id") Integer id,
@@ -57,16 +50,10 @@ public class OrderItemsController {
         return ResponseEntity.ok(service.update(id, dto));
     }
 
-    // ─────────────────────────────────────────
-    //  6. DELETE BY ID
-    // ─────────────────────────────────────────
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable("id") Integer id) {
-        return ResponseEntity.ok(service.delete(id));
-    }
+    
 
     // ─────────────────────────────────────────
-    //  7. GET BY ORDER ID
+    //  5. GET BY ORDER ID
     // ─────────────────────────────────────────
     @GetMapping("/order/{orderId}")
     public ResponseEntity<List<OrderItems>> getByOrderId(@PathVariable("orderId") Integer orderId) {
@@ -74,7 +61,7 @@ public class OrderItemsController {
     }
 
     // ─────────────────────────────────────────
-    //  8. GET BY ITEM ID
+    //  6. GET BY ITEM ID
     // ─────────────────────────────────────────
     @GetMapping("/item/{itemId}")
     public ResponseEntity<List<OrderItems>> getByItemId(@PathVariable("itemId") Integer itemId) {
@@ -82,7 +69,7 @@ public class OrderItemsController {
     }
 
     // ─────────────────────────────────────────
-    //  9. GET BY ORDER ID + ITEM ID
+    //  7. GET BY ORDER ID + ITEM ID
     // ─────────────────────────────────────────
     @GetMapping("/order/{orderId}/item/{itemId}")
     public ResponseEntity<List<OrderItems>> getByOrderAndItem(
@@ -92,7 +79,7 @@ public class OrderItemsController {
     }
 
     // ─────────────────────────────────────────
-    //  10. GET TOTAL QUANTITY BY ORDER ID
+    //  8. GET TOTAL QUANTITY BY ORDER ID
     // ─────────────────────────────────────────
     @GetMapping("/order/{orderId}/total-quantity")
     public ResponseEntity<Integer> getTotalQuantityByOrder(@PathVariable("orderId") Integer orderId) {
@@ -100,7 +87,7 @@ public class OrderItemsController {
     }
 
     // ─────────────────────────────────────────
-    //  11. GET TOTAL PRICE BY ORDER ID
+    //  9. GET TOTAL PRICE BY ORDER ID
     // ─────────────────────────────────────────
     @GetMapping("/order/{orderId}/total-price")
     public ResponseEntity<Double> getTotalPriceByOrder(@PathVariable("orderId") Integer orderId) {
@@ -108,31 +95,19 @@ public class OrderItemsController {
     }
 
     // ─────────────────────────────────────────
-    //  12. GET MOST ORDERED ITEMS
+    //  10. GET MOST ORDERED ITEMS
     // ─────────────────────────────────────────
     @GetMapping("/most-ordered")
     public ResponseEntity<List<OrderItems>> getMostOrderedItems() {
         return ResponseEntity.ok(service.getMostOrderedItems());
     }
 
-    // ─────────────────────────────────────────
-    //  13. BULK CREATE
-    // ─────────────────────────────────────────
-    @PostMapping("/bulk")
-    public ResponseEntity<String> createBulk(@RequestBody List<OrderItems> dtos) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.createBulk(dtos));
-    }
+    
+
+    
 
     // ─────────────────────────────────────────
-    //  14. DELETE ALL ITEMS BY ORDER ID
-    // ─────────────────────────────────────────
-    @DeleteMapping("/order/{orderId}")
-    public ResponseEntity<String> deleteByOrderId(@PathVariable("orderId") Integer orderId) {
-        return ResponseEntity.ok(service.deleteByOrderId(orderId));
-    }
-
-    // ─────────────────────────────────────────
-    //  15. UPDATE QUANTITY ONLY (PATCH)
+    //  11. UPDATE QUANTITY ONLY (PATCH)
     // ─────────────────────────────────────────
     @PatchMapping("/{id}/quantity")
     public ResponseEntity<String> updateQuantity(
@@ -142,7 +117,7 @@ public class OrderItemsController {
     }
 
     // ─────────────────────────────────────────
-    //  16. GET ENRICHED ORDER ITEM DETAILS
+    //  12. GET ENRICHED ORDER ITEM DETAILS
     // ─────────────────────────────────────────
     @GetMapping("/order/{orderId}/details")
     public ResponseEntity<List<OrderItems>> getOrderItemDetails(
@@ -150,7 +125,7 @@ public class OrderItemsController {
         return ResponseEntity.ok(service.getOrderItemDetails(orderId));
     }
 	 // ─────────────────────────────────────────
-	//  17. GET MENU ITEM BY ORDER ITEM ID
+	//  13. GET MENU ITEM BY ORDER ITEM ID
 	// ─────────────────────────────────────────
 	@GetMapping("/{id}/menuitem")
 	public ResponseEntity<OrderItems> getMenuItemByOrderItemId(@PathVariable("id") Integer id) {

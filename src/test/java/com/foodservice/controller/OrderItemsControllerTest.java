@@ -51,16 +51,7 @@ class OrderItemsControllerTest {
         verify(service).create(sampleDto);
     }
 
-    @Test
-    void createWithManualId_returnsCreated() {
-        when(service.createWithManualId(sampleDto)).thenReturn("Order item inserted with manual id");
-
-        ResponseEntity<String> response = controller.createWithManualId(sampleDto);
-
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals("Order item inserted with manual id", response.getBody());
-        verify(service).createWithManualId(sampleDto);
-    }
+   
 
     @Test
     void getAll_returnsOkList() {
@@ -95,17 +86,7 @@ class OrderItemsControllerTest {
         verify(service).update(1, sampleDto);
     }
 
-    @Test
-    void delete_returnsOkMessage() {
-        when(service.delete(1)).thenReturn("Order item deleted");
-
-        ResponseEntity<String> response = controller.delete(1);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Order item deleted", response.getBody());
-        verify(service).delete(1);
-    }
-
+    
     @Test
     void getByOrderId_returnsOkList() {
         when(service.getByOrderId(101)).thenReturn(List.of(sampleDto));
@@ -172,28 +153,9 @@ class OrderItemsControllerTest {
         verify(service).getMostOrderedItems();
     }
 
-    @Test
-    void createBulk_returnsCreated() {
-        List<OrderItems> dtos = List.of(sampleDto);
-        when(service.createBulk(dtos)).thenReturn("1 order item(s) inserted successfully");
+   
 
-        ResponseEntity<String> response = controller.createBulk(dtos);
-
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals("1 order item(s) inserted successfully", response.getBody());
-        verify(service).createBulk(dtos);
-    }
-
-    @Test
-    void deleteByOrderId_returnsOkMessage() {
-        when(service.deleteByOrderId(101)).thenReturn("All order items deleted");
-
-        ResponseEntity<String> response = controller.deleteByOrderId(101);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("All order items deleted", response.getBody());
-        verify(service).deleteByOrderId(101);
-    }
+   
 
     @Test
     void updateQuantity_returnsOkMessage() {

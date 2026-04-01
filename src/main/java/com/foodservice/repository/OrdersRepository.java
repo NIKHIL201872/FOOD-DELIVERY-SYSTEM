@@ -15,7 +15,7 @@ public interface OrdersRepository extends JpaRepository<OrdersEntity, Integer> {
 	@Query("SELECT COALESCE(MAX(o.orderId), 0) FROM OrdersEntity o")
 	Integer findMaxOrderId();
 
-	List<OrdersEntity> findByDeliveryDriver(DeliveryDriversEntity driver);
+	
     // Find all orders by customer
     List<OrdersEntity> findByCustomer_CustomerId(Integer customerId);
 
@@ -24,6 +24,7 @@ public interface OrdersRepository extends JpaRepository<OrdersEntity, Integer> {
 
     // Find all orders by delivery driver
     List<OrdersEntity> findByDeliveryDriver_DriverId(Integer driverId);
+    List<OrdersEntity> findByDeliveryDriver(DeliveryDriversEntity driver);
 
     // Find orders by status
     List<OrdersEntity> findByOrderStatus(String orderStatus);
@@ -34,16 +35,7 @@ public interface OrdersRepository extends JpaRepository<OrdersEntity, Integer> {
     // Find orders by restaurant and status
     List<OrdersEntity> findByRestaurant_RestaurantIdAndOrderStatus(Integer restaurantId, String orderStatus);
 
-    // Find orders placed within a date range
-    List<OrdersEntity> findByOrderDateBetween(LocalDateTime startDate, LocalDateTime endDate);
-
-    // Find orders by restaurant within a date range
-    @Query("SELECT o FROM OrdersEntity o WHERE o.restaurant.restaurantId = :restaurantId " +
-           "AND o.orderDate BETWEEN :startDate AND :endDate")
-    List<OrdersEntity> findByRestaurantAndDateRange(@Param("restaurantId") Integer restaurantId,
-                                                    @Param("startDate") LocalDateTime startDate,
-                                                    @Param("endDate") LocalDateTime endDate);
-
+    
     // Count orders by status for a specific restaurant
     @Query("SELECT COUNT(o) FROM OrdersEntity o WHERE o.restaurant.restaurantId = :restaurantId " +
            "AND o.orderStatus = :status")
@@ -55,22 +47,11 @@ public interface OrdersRepository extends JpaRepository<OrdersEntity, Integer> {
     
  // OrdersRepository.java - add these
 
- // Pending orders with no driver assigned
- @Query("SELECT o FROM OrdersEntity o WHERE o.orderStatus = 'PENDING' AND o.deliveryDriver IS NULL")
- List<OrdersEntity> findPendingUnassigned();
-
+ 
  // Active deliveries for a driver
  List<OrdersEntity> findByDeliveryDriver_DriverIdAndOrderStatus(Integer driverId, String status);
 
- // Revenue sum for a restaurant in a date range (requires joining orderItems)
- @Query("SELECT SUM(oi.quantity * oi.item.itemPrice) FROM OrderItemsEntity oi " +
-        "WHERE oi.order.restaurant.restaurantId = :restaurantId " +
-        "AND oi.order.orderDate BETWEEN :startDate AND :endDate " +
-        "AND oi.order.orderStatus = 'DELIVERED'")
- Double sumRevenueByRestaurantAndDateRange(@Param("restaurantId") Integer restaurantId,
-                                           @Param("startDate") LocalDateTime startDate,
-                                           @Param("endDate") LocalDateTime endDate);
-
+ 
  // Customer summary - count of orders
  Long countByCustomer_CustomerId(Integer customerId);
 

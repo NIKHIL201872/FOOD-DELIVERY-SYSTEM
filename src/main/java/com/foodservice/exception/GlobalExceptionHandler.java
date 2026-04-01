@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // 🔹 Common method to build response
+    // Common method to build response
     private ApiErrorResponse buildResponse(Exception ex, HttpStatus status, HttpServletRequest request) {
         return new ApiErrorResponse(
                 LocalDateTime.now(),
@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ✅ 400 - Bad Request
+    // 400 - Bad Request
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ApiErrorResponse> handleBadRequest(
             BadRequestException ex, HttpServletRequest request) {
@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ✅ Coupon Expired
+    // Coupon Expired
     @ExceptionHandler(CouponExpiredException.class)
     public ResponseEntity<ApiErrorResponse> handleCouponExpired(
             CouponExpiredException ex, HttpServletRequest request) {
@@ -45,7 +45,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ✅ Coupon Not Found
+    // Coupon Not Found
     @ExceptionHandler(CouponNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleCouponNotFound(
             CouponNotFoundException ex, HttpServletRequest request) {
@@ -56,7 +56,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ✅ Duplicate Coupon
+    //  Duplicate Coupon
     @ExceptionHandler(DuplicateCouponException.class)
     public ResponseEntity<ApiErrorResponse> handleDuplicateCoupon(
             DuplicateCouponException ex, HttpServletRequest request) {
@@ -67,7 +67,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ✅ No Address
+    //  No Address
     @ExceptionHandler(NoAddressException.class)
     public ResponseEntity<ApiErrorResponse> handleNoAddress(
             NoAddressException ex, HttpServletRequest request) {
@@ -78,7 +78,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ✅ No Customer
+    //  No Customer
     @ExceptionHandler(NoCustomerException.class)
     public ResponseEntity<ApiErrorResponse> handleNoCustomer(
             NoCustomerException ex, HttpServletRequest request) {
@@ -89,7 +89,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ✅ No Records Found
+    //  No Records Found
     @ExceptionHandler(NoRecordsFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleNoRecords(
             NoRecordsFoundException ex, HttpServletRequest request) {
@@ -100,7 +100,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ✅ Resource Conflict
+    //  Resource Conflict
     @ExceptionHandler(ResourceConflictException.class)
     public ResponseEntity<ApiErrorResponse> handleConflict(
             ResourceConflictException ex, HttpServletRequest request) {
@@ -111,7 +111,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ✅ MenuItem Conflict
+    //  MenuItem Conflict
     @ExceptionHandler(MenuItemConflictException.class)
     public ResponseEntity<ApiErrorResponse> handleMenuItemConflict(
             MenuItemConflictException ex, HttpServletRequest request) {
@@ -122,7 +122,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ✅ OrderItem Conflict
+    //  OrderItem Conflict
     @ExceptionHandler(OrderItemConflictException.class)
     public ResponseEntity<ApiErrorResponse> handleOrderItemConflict(
             OrderItemConflictException ex, HttpServletRequest request) {
@@ -133,7 +133,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ✅ Resource Not Found
+    //  Resource Not Found
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleNotFound(
             ResourceNotFoundException ex, HttpServletRequest request) {
@@ -144,7 +144,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ✅ MenuItem Not Found
+    //  MenuItem Not Found
     @ExceptionHandler(MenuItemNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleMenuItemNotFound(
             MenuItemNotFoundException ex, HttpServletRequest request) {
@@ -155,7 +155,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ✅ OrderItem Not Found
+    //  OrderItem Not Found
     @ExceptionHandler(OrderItemNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleOrderItemNotFound(
             OrderItemNotFoundException ex, HttpServletRequest request) {
@@ -168,14 +168,14 @@ public class GlobalExceptionHandler {
 
     
     
-    //testing purposes DIPTYANIL
+    //testing purposes
     @ExceptionHandler(DuplicateCustomerException.class)
     public String handleDuplicate(DuplicateCustomerException ex) {
         return ex.getMessage();
     }
     
     
-    // ✅ Catch ALL (Fallback)
+    //  Catch ALL (Fallback)
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> handleGlobalException(
             Exception ex, HttpServletRequest request) {
